@@ -6,6 +6,8 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Stack from '@mui/material/Stack';
+
 
 export default function post_keijiban() {
   const { data: session, status } = useSession();
@@ -24,6 +26,8 @@ export default function post_keijiban() {
   return (
     <>
       <main className={styles.main}>
+        <Box sx={{ width: '75%' }}>
+        <Stack spacing={5}>
         <TextField
           required
           id="standard-required"
@@ -31,12 +35,14 @@ export default function post_keijiban() {
           variant="standard"
         />
 
+        
         <TextField
           id="standard-select-currency"
           select
           label="カテゴリー"
           helperText="カテゴリーを選択"
           variant="standard"
+          style = {{width: "30%"}}
         >
           <MenuItem>あああ</MenuItem>
           <MenuItem>あああ</MenuItem>
@@ -48,7 +54,9 @@ export default function post_keijiban() {
           id="outlined-multiline-static"
           label="掲示板の概要"
           multiline
-          rows={4}
+          fullWidth
+          rows={6}
+          
         />
 
         <Button
@@ -58,6 +66,9 @@ export default function post_keijiban() {
         >
           掲示板を投稿
         </Button>
+
+        </Stack>
+        </Box>
       </main>
     </>
   );
