@@ -7,19 +7,27 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Stack from '@mui/material/Stack';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 
 export default function post_keijiban() {
   const { data: session, status } = useSession();
+  const { register, handleSubmit } = useForm();
 
   console.log(session);
   console.log(status);
 
-  const postKeijiban = () => {
+  const postKeijiban = (data) => {
+    //console.log(data);
+    const {title, category, description} = data;
+    //console.log(title);
+    //console.log(category);
+    //console.log(description);
+    
     axios.post("api/boards", {
-      title: "三郎",
-      category: "田中",
-      description: "momo",
+      title,
+      category,
+      description,
       userId: session.user.id,
     });
   };
@@ -33,6 +41,7 @@ export default function post_keijiban() {
           id="standard-required"
           label="掲示板名"
           variant="standard"
+          {...register('title')}
         />
 
         
@@ -43,11 +52,13 @@ export default function post_keijiban() {
           helperText="カテゴリーを選択"
           variant="standard"
           style = {{width: "30%"}}
+          {...register('category')}
         >
-          <MenuItem>あああ</MenuItem>
-          <MenuItem>あああ</MenuItem>
-          <MenuItem>あああ</MenuItem>
-          <MenuItem>あああ</MenuItem>
+          <MenuItem value = "aaa">あああ</MenuItem>
+          <MenuItem value = "aaa">あああ</MenuItem>
+          <MenuItem value = "aaa">あああ</MenuItem>
+          <MenuItem value = "aaa">あああ</MenuItem>
+
         </TextField>
 
         <TextField
@@ -56,13 +67,13 @@ export default function post_keijiban() {
           multiline
           fullWidth
           rows={6}
-          
+          {...register('description')}
         />
 
         <Button
           variant="contained"
           endIcon={<PostAddIcon />}
-          onClick={postKeijiban}
+          onClick={handleSubmit(postKeijiban)}
         >
           掲示板を投稿
         </Button>
