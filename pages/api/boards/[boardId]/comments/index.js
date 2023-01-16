@@ -22,14 +22,15 @@ export default async function handler(req, res) {
   const prisma = new PrismaClient();
   if (session) {
     if (req.method === "POST") {
+    
       const comment = req.body.comment;
-      const authorId = +req.query.authorId;
-      const boardId = +req.query.boardId;
+      const userId = req.body.userId;
+      const boardId = +req.body.boardId;
       const result = await prisma.comment.create({
         data: {
           comment,
           boardId,
-          authorId,
+          userId
         },
       });
       res.json(result);

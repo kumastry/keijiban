@@ -11,6 +11,12 @@ import Link from "next/link";
 import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
+import FormControl from '@mui/material/FormControl';
+import { useState } from "react";
+import { SubmitHandler, useForm } from 'react-hook-form';
+import axios  from "axios";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { border } from "@mui/system";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -23,7 +29,25 @@ export async function getStaticPaths() {
 }
 
 export default function board({ comments }) {
+  const [commentform, useCommentform] = useState("");
+  const { register, handleSubmit } = useForm();
+  const { data: session, status } = useSession();
   console.log(comments);
+  const router = useRouter()
+  const { boardId } = router.query;
+  console.log(boardId);
+
+  const onSubmit = (data) => {
+    console.log(session);
+    console.log(boardId);
+    axios.post('../../api/boards/[boardId]/comments', {
+      comment:data.comment,
+      userId:session.user.id,
+      boardId
+    });
+  }
+
+
   return (
     <>
       <main className={styles.main}>
@@ -34,13 +58,21 @@ export default function board({ comments }) {
             </Card>
           );
         })}
+        
         <TextField
           fullWidth
           id="outlined-multiline-static"
           label="Multiline"
           multiline
           rows={4}
+          {...register('comment')}
         />
+        
+        <Button color="primary" variant="contained" size="large" onClick={handleSubmit(onSubmit)}>
+          投稿
+        </Button>
+
+        
       </main>
     </>
   );
