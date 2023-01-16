@@ -1,40 +1,37 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import { useSession, signIn, signOut } from "next-auth/react"
-import { getBoards } from './api/boards';
-import {getBoard} from './api/boards/[boardId]';
-import { PrismaClient } from '@prisma/client'
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Link from 'next/link';
-import Fab from '@mui/material/Fab';
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { getBoards } from "./api/boards";
+import { getBoard } from "./api/boards/[boardId]";
+import { PrismaClient } from "@prisma/client";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import Fab from "@mui/material/Fab";
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 
-
-export default function Home({boards}) {
+export default function Home({ boards }) {
   const { data: session, status } = useSession();
   console.log(boards);
-  const body = {title:"oo", category:"tesugaku", authorId:"2"};
+  const body = { title: "oo", category: "tesugaku", authorId: "2" };
   const bt = async () => {
-    const f = await fetch('/api/boards',
-    {
-      method: 'POST',
+    const f = await fetch("/api/boards", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-      
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
     });
 
     console.log(f);
     console.log(boards);
-  }
+  };
   return (
     <>
       <Head>
@@ -43,59 +40,47 @@ export default function Home({boards}) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <main className={styles.main}>
-             
-            {boards.map((board, key) => {
-          
-              return (
-                <Card sx={{ minWidth:100, maxWidth: 345 }}>
-                       <CardContent>
-                          
-                          <Typography variant="h5" component="div">
-                            {board.id},{board.title}
-                          </Typography>
+        {boards.map((board, key) => {
+          return (
+            <Card sx={{ minWidth: 100, maxWidth: 345 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {board.id},{board.title}
+                </Typography>
 
-                          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                            {board.category}
-                          </Typography>
+                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                  {board.category}
+                </Typography>
 
-                          
-                          <Typography variant="body2">
-                            {board.description}
-                          </Typography>
+                <Typography variant="body2">{board.description}</Typography>
+              </CardContent>
 
-                       </CardContent>
+              <CardActions>
+                <Link href={`/boards/${board.id}`}>
+                  <Button size="small">掲示板を見る</Button>
+                </Link>
+              </CardActions>
+            </Card>
+          );
+        })}
 
-                       <CardActions>
-                          <Link href = {`/boards/${board.id}`}><Button size="small">掲示板を見る</Button></Link>
-                       </CardActions>
-                </Card>
-                );
-
-            })}
-            
-        <Link href = {'/post_keijiban'}>
-        <Fab variant="extended" color="primary" aria-label="add">
-          掲示板作成
-        </Fab>
+        <Link href={"/post_keijiban"}>
+          <Fab variant="extended" color="primary" aria-label="add">
+            掲示板作成
+          </Fab>
         </Link>
-
       </main>
     </>
   );
-
-
-
 }
 
-
 export async function getServerSideProps() {
-  
   const boards = await getBoards(0, 0);
   console.log(boards);
   console.log("serversidepros");
   return {
-    props: {boards}, // will be passed to the page component as props
-  }
+    props: { boards }, // will be passed to the page component as props
+  };
 }

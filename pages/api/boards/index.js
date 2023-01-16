@@ -14,22 +14,22 @@ export async function getBoards(limit, offset) {
 }
 
 export default async function handler(req, res) {
- // const secret = process.env.NEXTAUTH_SECRET;
- // console.log(process)
+  // const secret = process.env.NEXTAUTH_SECRET;
+  // console.log(process)
   //console.log(secret);
   const prisma = new PrismaClient();
   const session = await unstable_getServerSession(req, res, authOptions);
-  
+
   //const token = await getToken({ req, secret })
   //console.log("JSON Web Token", token)
   //console.log("session", session);
   console.log(session);
 
-  if(session) {
-    if(req.method === 'GET') {
+  if (session) {
+    if (req.method === "GET") {
       const boards = await getBoards(0, 0, boards);
       res.json(boards);
-    } else if(req.method === 'POST') {
+    } else if (req.method === "POST") {
       //console.log('POST');
       const title = req.body.title;
       const category = req.body.category;
@@ -48,15 +48,16 @@ export default async function handler(req, res) {
         },
       });
 
-      if(!result) {
+      if (!result) {
         res.status(404).send("not found");
       }
 
       res.status(200).json(result);
     } else {
       res.status(403).send({
-        error: "You must be signed in to view the protected content on this page.",
+        error:
+          "You must be signed in to view the protected content on this page.",
       });
     }
   }
-};
+}

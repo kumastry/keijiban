@@ -5,12 +5,12 @@ const prisma = new PrismaClient();
 //POST
 //ユーザーの投稿
 export default async function handler(req, res) {
-    const {name} = req.body;
-    const result = await prisma.user.create({
-        data:{
-            name
-        }
-    });
+  const { name } = req.body;
+  const result = await prisma.user.create({
+    data: {
+      name,
+    },
+  });
 
-    res.json(result);
-};
+  res.json(result);
+}
