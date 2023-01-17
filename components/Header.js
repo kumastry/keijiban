@@ -5,16 +5,37 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 export default function Header() {
+    const { data: session, status } = useSession();
+    console.log(session);
     return (
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
+            
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              kumastry keijiban
+                <Link href = '/'>
+                    kumastry keijiban
+                </Link>
             </Typography>
-            <Button color="inherit">サインイン</Button>
+            
+            <Button color="inherit">
+
+                {status !== "authenticated"?<Link href = "/api/auth/signin">
+                    サインイン
+                </Link>:<Image
+    src={session.user.image}
+      alt="Picture of the author"
+      width={50}
+      height={50}
+    />
+                }
+            </Button>
+
           </Toolbar>
         </AppBar>
       </Box>
