@@ -27,12 +27,14 @@ export default function Header() {
 
                 {status !== "authenticated"?<Link href = "/api/auth/signin">
                     サインイン
-                </Link>:<Image
+                </Link>:<Link href = "/profile"><Image
     src={session.user.image}
-      alt="Picture of the author"
+      alt="icon"
       width={50}
       height={50}
+      style = {{borderRadius: "50%"}}
     />
+    </Link>
                 }
             </Button>
 
