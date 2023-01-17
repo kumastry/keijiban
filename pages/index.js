@@ -15,6 +15,7 @@ import Link from "next/link";
 import Fab from "@mui/material/Fab";
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
+import Header from "../components/Header";
 
 export default function Home({ boards }) {
   const { data: session, status } = useSession();
