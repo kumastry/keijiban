@@ -14,16 +14,26 @@ import TextField from "@mui/material/TextField";
 import FormControl from '@mui/material/FormControl';
 import { useState } from "react";
 import { SubmitHandler, useForm } from 'react-hook-form';
-import axios  from "axios";
+import axios from "axios";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { border } from "@mui/system";
+import getBoards from '../api/boards';
+import { PrismaClient } from "@prisma/client";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
 export async function getStaticPaths() {
+  const prisma = new PrismaClient();
+  const boards = await prisma.board.findMany();
+  console.log("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+  console.log(boards);
+  const paths = boards.map((item, key)=> {
+    return {params:{boardId:String(item.id)}}
+  });
+  console.log(paths);
   return {
-    paths: [{ params: { boardId: "1" } }, { params: { boardId: "2" } }],
+    paths,
     fallback: false, // can also be true or 'blocking'
   };
 }

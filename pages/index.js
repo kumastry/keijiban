@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import Fab from "@mui/material/Fab";
+import Stack from "@mui/material/Stack";
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 import Header from "../components/Header";
@@ -43,6 +44,7 @@ export default function Home({ boards }) {
       </Head>
 
       <main className={styles.main}>
+        <Stack spacing={2}>
         {boards.map((board, key) => {
           return (
             <Card sx={{ minWidth: 100, maxWidth: 345 }}>
@@ -72,6 +74,7 @@ export default function Home({ boards }) {
             掲示板作成
           </Fab>
         </Link>
+        </Stack>
       </main>
     </>
   );
