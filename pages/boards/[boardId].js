@@ -19,6 +19,12 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { border } from "@mui/system";
 import getBoards from '../api/boards';
 import { PrismaClient } from "@prisma/client";
+import Divider from "@mui/material/Divider";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -39,7 +45,6 @@ export async function getStaticPaths() {
 }
 
 export default function board({ comments }) {
-  const [commentform, useCommentform] = useState("");
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   console.log(comments);
@@ -61,20 +66,26 @@ export default function board({ comments }) {
   return (
     <>
       <main className={styles.main}>
-        
+        <List>
         {comments.map((item, key) => {
           return (
-            <Card>
-              <CardContent>{item.comment}</CardContent>
-            </Card>
+            <ListItem  divider>
+              <ListItemText primary={item.comment} />
+
+              <FavoriteBorderIcon/>
+
+            </ListItem>       
           );
         })}
         
+        </List>
+        
+        {status === "unauthenticated" || 
         <form method = "post" onSubmit={handleSubmit(onSubmit)}>
         <TextField
           fullWidth
-          id="outlined-multiline-static"
-          label="Multiline"
+          id="comment-form"
+          label="コメントを投稿"
           multiline
           rows={4}
           {...register('comment')}
@@ -84,6 +95,7 @@ export default function board({ comments }) {
           投稿
         </Button>
         </form>
+        }
 
         
       </main>
