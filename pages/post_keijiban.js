@@ -18,7 +18,7 @@ export default function post_keijiban() {
   console.log(status);
 
   const postKeijiban = (data) => {
-    //console.log(data);
+    console.log(data);
     const {title, category, description} = data;
     //console.log(title);
     //console.log(category);
@@ -34,8 +34,11 @@ export default function post_keijiban() {
   return (
     <>
       <main className={styles.main}>
+    
         <Box sx={{ width: '75%' }}>
+        <form method="post" onSubmit={handleSubmit(postKeijiban)}>
         <Stack spacing={5}>
+         
         <TextField
           required
           id="standard-required"
@@ -71,14 +74,18 @@ export default function post_keijiban() {
         />
 
         <Button
+         type="submit"
           variant="contained"
           endIcon={<PostAddIcon />}
-          onClick={handleSubmit(postKeijiban)}
+          
         >
           掲示板を投稿
         </Button>
 
+        
+
         </Stack>
+        </form>
         </Box>
       </main>
     </>

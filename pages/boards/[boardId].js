@@ -61,6 +61,7 @@ export default function board({ comments }) {
   return (
     <>
       <main className={styles.main}>
+        
         {comments.map((item, key) => {
           return (
             <Card>
@@ -69,6 +70,7 @@ export default function board({ comments }) {
           );
         })}
         
+        <form method = "post" onSubmit={handleSubmit(onSubmit)}>
         <TextField
           fullWidth
           id="outlined-multiline-static"
@@ -78,9 +80,10 @@ export default function board({ comments }) {
           {...register('comment')}
         />
         
-        <Button color="primary" variant="contained" size="large" onClick={handleSubmit(onSubmit)}>
+        <Button type = "submit "color="primary" variant="contained" size="large" >
           投稿
         </Button>
+        </form>
 
         
       </main>
