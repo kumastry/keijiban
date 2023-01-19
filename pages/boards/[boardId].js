@@ -11,20 +11,20 @@ import Link from "next/link";
 import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
-import FormControl from '@mui/material/FormControl';
+import FormControl from "@mui/material/FormControl";
 import { useState } from "react";
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { border } from "@mui/system";
-import getBoards from '../api/boards';
+import getBoards from "../api/boards";
 import { PrismaClient } from "@prisma/client";
 import Divider from "@mui/material/Divider";
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -32,10 +32,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 export async function getStaticPaths() {
   const prisma = new PrismaClient();
   const boards = await prisma.board.findMany();
-  console.log("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+  console.log("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
   console.log(boards);
-  const paths = boards.map((item, key)=> {
-    return {params:{boardId:String(item.id)}}
+  const paths = boards.map((item, key) => {
+    return { params: { boardId: String(item.id) } };
   });
   console.log(paths);
   return {
@@ -48,56 +48,56 @@ export default function board({ comments }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   console.log(comments);
-  const router = useRouter()
+  const router = useRouter();
   const { boardId } = router.query;
   console.log(boardId);
 
   const onSubmit = (data) => {
     console.log(session);
     console.log(boardId);
-    axios.post('../../api/boards/[boardId]/comments', {
-      comment:data.comment,
-      userId:session.user.id,
-      boardId
+    axios.post("../../api/boards/[boardId]/comments", {
+      comment: data.comment,
+      userId: session.user.id,
+      boardId,
     });
-  }
-
+  };
 
   return (
     <>
       <main className={styles.main}>
         <List>
-        {comments.map((item, key) => {
-          return (
-            <ListItem  divider>
-              <ListItemText primary={item.comment} />
+          {comments.map((item, key) => {
+            return (
+              <ListItem divider>
+                <ListItemText primary={item.comment} />
 
-              <FavoriteBorderIcon/>
-
-            </ListItem>       
-          );
-        })}
-        
+                <FavoriteBorderIcon />
+              </ListItem>
+            );
+          })}
         </List>
-        
-        {status === "unauthenticated" || 
-        <form method = "post" onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          fullWidth
-          id="comment-form"
-          label="コメントを投稿"
-          multiline
-          rows={4}
-          {...register('comment')}
-        />
-        
-        <Button type = "submit "color="primary" variant="contained" size="large" >
-          投稿
-        </Button>
-        </form>
-        }
 
-        
+        {status === "unauthenticated" || (
+          <form method="post" onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              fullWidth
+              id="comment-form"
+              label="コメントを投稿"
+              multiline
+              rows={4}
+              {...register("comment")}
+            />
+
+            <Button
+              type="submit "
+              color="primary"
+              variant="contained"
+              size="large"
+            >
+              投稿
+            </Button>
+          </form>
+        )}
       </main>
     </>
   );

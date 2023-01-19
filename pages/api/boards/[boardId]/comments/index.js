@@ -22,7 +22,6 @@ export default async function handler(req, res) {
   const prisma = new PrismaClient();
   if (session) {
     if (req.method === "POST") {
-    
       const comment = req.body.comment;
       const userId = req.body.userId;
       const boardId = +req.body.boardId;
@@ -30,7 +29,7 @@ export default async function handler(req, res) {
         data: {
           comment,
           boardId,
-          userId
+          userId,
         },
       });
       res.json(result);

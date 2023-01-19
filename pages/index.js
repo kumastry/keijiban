@@ -45,35 +45,35 @@ export default function Home({ boards }) {
 
       <main className={styles.main}>
         <Stack spacing={2}>
-        {boards.map((board, key) => {
-          return (
-            <Card sx={{ minWidth: 100, maxWidth: 345 }}>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {board.id},{board.title}
-                </Typography>
+          {boards.map((board, key) => {
+            return (
+              <Card sx={{ minWidth: 100, maxWidth: 345 }}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {board.id},{board.title}
+                  </Typography>
 
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  {board.category}
-                </Typography>
+                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    {board.category}
+                  </Typography>
 
-                <Typography variant="body2">{board.description}</Typography>
-              </CardContent>
+                  <Typography variant="body2">{board.description}</Typography>
+                </CardContent>
 
-              <CardActions>
-                <Link href={`/boards/${board.id}`}>
-                  <Button size="small">掲示板を見る</Button>
-                </Link>
-              </CardActions>
-            </Card>
-          );
-        })}
+                <CardActions>
+                  <Link href={`/boards/${board.id}`}>
+                    <Button size="small">掲示板を見る</Button>
+                  </Link>
+                </CardActions>
+              </Card>
+            );
+          })}
 
-        <Link href={"/post_keijiban"}>
-          <Fab variant="extended" color="primary" aria-label="add">
-            掲示板作成
-          </Fab>
-        </Link>
+          <Link href={"/post_keijiban"}>
+            <Fab variant="extended" color="primary" aria-label="add">
+              掲示板作成
+            </Fab>
+          </Link>
         </Stack>
       </main>
     </>

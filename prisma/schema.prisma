@@ -85,4 +85,12 @@ model VerificationToken {
   @@map("verificationtoken")
 }
 
+model Like {
+  id Int @id @default(autoincrement())
+  userId       String
+  commentId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references:[id], onDelete: Cascade)
+}
+
 
