@@ -53,9 +53,7 @@ export async function getStaticPaths() {
 export default function board({ comments, likes }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
-  console.log(comments);
   const router = useRouter();
-  const [a, setA] = useState(false);
   const [likeState, SetLikeState] = useState(() => {
     const st = new Set();
     console.log(comments, likes)
@@ -68,11 +66,10 @@ export default function board({ comments, likes }) {
         }
       }
     }
-
-  
     console.log(st);
     return st;
   });
+
   const { boardId } = router.query;
   
   const onSubmit = (data) => {
@@ -87,32 +84,16 @@ export default function board({ comments, likes }) {
 
   const postLike = (commentId) => {
     console.log(session.user.id);
-    console.log(boardId)
-    axios.post("../../api/boards/[boardId]/comments/[commentId]/like", {
-    userId:session.user.id,
-    commentId,
-    boardId,
-    }
-    );
-  }
-
-
-
-  const isLiked = (userId, commentId) => {
-    console.log(likes)
-    console.log(userId, commentId)
-    likes.map((like) => {
-      if(like.userId === userId && like.commentId === commentId) {
-        console.log("true")
-        return true;
-
-      }
+    console.log(boardId);
+    console.log(commentId);
+    
+    axios.post("../api/boards/[boardId]/comments/[commentId]/like", {
+      userId:session.user.id,
+      commentId,
+      boardId,
     });
-
-    console.log("false")
-    return false;
+    
   }
-  
 
   return (
     <>
@@ -124,8 +105,8 @@ export default function board({ comments, likes }) {
             return (
               <ListItem divider>
                 <ListItemText primary={item.comment} />
-                { likeState && likeState.has(item.id) === false && status === "authenticated" && item.userId === session.user.id?
-                <FavoriteBorderIcon onClick = {postLike}/>
+                {likeState.has(item.id) === false && status === "authenticated" && item.userId === session.user.id?
+                <FavoriteBorderIcon onClick = {() => postLike(item.id)}/>
                 :<FavoriteIcon />}
               </ListItem>
             );
