@@ -105,9 +105,10 @@ export default function board({ comments, likes }) {
             return (
               <ListItem divider>
                 <ListItemText primary={item.comment} />
-                {likeState.has(item.id) === false && status === "authenticated" && item.userId === session.user.id?
+                {likeState.has(item.id) === true && status === "authenticated" && item.userId === session.user.id?
+                <FavoriteIcon />:
                 <FavoriteBorderIcon onClick = {() => postLike(item.id)}/>
-                :<FavoriteIcon />}
+                }
               </ListItem>
             );
           })}
