@@ -80,8 +80,12 @@ export default function Home({ boards }) {
   );
 }
 
-export async function getServerSideProps() {
-  const boards = await getBoards(0, 0);
+export async function getServerSideProps({params, query}) {
+  const page = +query.page;
+  const take = 5;
+  console.log("query",query)
+  console.log(page);
+  const boards = await getBoards(take, (page-1)*take);
   console.log(boards);
   console.log("serversidepros");
   return {

@@ -6,9 +6,11 @@ import { getToken } from "next-auth/jwt";
 //掲示板を投稿
 //POSTの場合はクエリパラメータ(limit, offset)を設定する
 
-export async function getBoards(limit, offset) {
+export async function getBoards(take, skip) {
   const prisma = new PrismaClient();
-  const boards = await prisma.board.findMany();
+  const boards = await prisma.board.findMany(
+    {take, skip}
+  );
   //console.log(boards);
   return boards;
 }

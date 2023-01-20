@@ -134,7 +134,7 @@ export default function board({ comments, favorites, favoriteCount }) {
                 <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favoriteCount.get(String(item.id)) === undefined?0:favoriteCount.get(String(item.id))}</>
                 }
                 </IconButton>
-                
+
               </ListItem>
             );
           })}
