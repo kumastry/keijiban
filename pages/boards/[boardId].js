@@ -124,15 +124,15 @@ export default function board({ comments, likes }) {
             return (
               <ListItem divider>
                 <ListItemText primary={item.comment} />
-                { likeState && likeState.has(item.id) === false ?
-                <FavoriteBorderIcon onClick = {() => setA(!a)}/>
-                :<p onClick = {() => setA(!a)}>いいねした</p>}
+                { likeState && likeState.has(item.id) === false && status === "authenticated" && item.userId === session.user.id?
+                <FavoriteBorderIcon onClick = {postLike}/>
+                :<FavoriteIcon />}
               </ListItem>
             );
           })}
         </List>
 
-        {status === "authenticated" || (
+        {status === "unauthenticated" || (
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <TextField
               fullWidth
