@@ -20,7 +20,7 @@ model Board  {
   updatedAt DateTime @updatedAt
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
-  likes Like[]
+  favorites Favorite[]
 }
 
 model Comment  {
@@ -28,7 +28,7 @@ model Comment  {
   comment String @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  likes Like []
+  favorites Favorite []
   board     Board    @relation(fields: [boardId],  references: [id])
   boardId   Int 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -74,7 +74,7 @@ model User {
   boards Board[]
   accounts Account[]
   sessions Session[]
-  likes Like[]
+  favorites Favorite[]
   @@map("user")
 }
 
@@ -87,14 +87,16 @@ model VerificationToken {
   @@map("verificationtoken")
 }
 
-model Like {
+model Favorite {
   id Int @id @default(autoincrement())
   userId  String
   boardId Int
-  commentId Int
+  commentId Int @map("commentid")
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
   comment Comment @relation(fields: [commentId], references:[id], onDelete: Cascade)
+
+  @@map("favorite")
 }
 
 

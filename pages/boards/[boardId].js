@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { getComments } from "../api/boards/[boardId]/comments";
-import { getLikes } from "../api/boards/[boardId]/comments/[commentId]/like";
+import { getfavorites, getfavoriteCount } from "../api/boards/[boardId]/comments/[commentId]/favorite";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -50,17 +50,18 @@ export async function getStaticPaths() {
   };
 }
 
-export default function board({ comments, likes }) {
+export default function board({ comments, favorites, favoriteCount }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [likeState, SetLikeState] = useState(() => {
+  console.log(favoriteCount);
+  const [favoriteState, SetfavoriteState] = useState(() => {
     const st = new Set();
-    console.log(comments, likes)
+    console.log(comments, favorites)
     for(const comment of comments) {
-      for(const like of likes) {
-        console.log(comment, like)
-        if(comment.id === like.commentId) {
+      for(const favorite of favorites) {
+        console.log(comment, favorite)
+        if(comment.id === favorite.commentId) {
           console.log("puttar");
           st.add(comment.id);
         }
@@ -82,12 +83,12 @@ export default function board({ comments, likes }) {
     });
   };
 
-  const postLike = (commentId) => {
+  const postfavorite = (commentId) => {
     console.log(session.user.id);
     console.log(boardId);
     console.log(commentId);
     
-    axios.post("../api/boards/[boardId]/comments/[commentId]/like", {
+    axios.post("../api/boards/[boardId]/comments/[commentId]/favorite", {
       userId:session.user.id,
       commentId,
       boardId,
@@ -95,18 +96,18 @@ export default function board({ comments, likes }) {
     
   }
 
-  const deleteLike = (commentId) => {
-    axios.delete("../api/boards/[boardId]/comments/[commentId]/like", {data: {
+  const deletefavorite = (commentId) => {
+    axios.delete("../api/boards/[boardId]/comments/[commentId]/favorite", {data: {
       userId:session.user.id,
       commentId,
     }})
   }
 
-  const isLike = (userId, commentId) => {
-    console.log(likes)
-    for(const like of likes) {
-      if(like.userId === userId && like.commentId === commentId) {
-        console.log(like.userId, userId);
+  const isfavorite = (userId, commentId) => {
+    console.log(favorites)
+    for(const favorite of favorites) {
+      if(favorite.userId === userId && favorite.commentId === commentId) {
+        console.log(favorite.userId, userId);
         return true;
       }
     };
@@ -121,13 +122,14 @@ export default function board({ comments, likes }) {
 
         <List>
           {comments.map((item, key) => {
-            console.log(likeState)
+            console.log(favoriteState)
             return (
               <ListItem divider>
+                
                 <ListItemText primary={item.comment} />
-                {likeState.has(item.id) === true && status === "authenticated" && isLike(session.user.id, item.id) === true?
-                <FavoriteIcon onClick = {() => deleteLike(item.id)}/>:
-                <FavoriteBorderIcon onClick = {() => postLike(item.id)}/>
+                {favoriteState.has(item.id) === true && status === "authenticated" && isfavorite(session.user.id, item.id) === true?
+                <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/> {favoriteCount.get(String(item.id))}</>:
+                <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favoriteCount.get(String(item.id))}</>
                 }
               </ListItem>
             );
@@ -162,12 +164,17 @@ export default function board({ comments, likes }) {
 
 export async function getStaticProps(context) {
   const boardId = context.params.boardId;
-  console.log(boardId);
+  //console.log(boardId);
   const comments = await getComments(boardId);
-  const likes = await getLikes(boardId);
+  const favorites = await getfavorites(boardId);
+  const fav = await getfavoriteCount();
+  const favoriteCount = new Map();
+  for(const element of fav) {
+    favoriteCount.set(String(element.commentid), String(element.count));
+  }
   console.log("lieks")
-  console.log(likes);
+  console.log(favoriteCount);
   return {
-    props: { comments, likes}, // will be passed to the page component as props
+    props: { comments, favorites, favoriteCount } // will be passed to the page component as props
   };
 }

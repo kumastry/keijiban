@@ -3,18 +3,29 @@ import { authOptions } from "../../../../auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth/next";
 
 
-export const getLikes = async (boardId) => {
+export const getfavorites = async (boardId) => {
   const prisma = new PrismaClient();
-  const result = await prisma.like.findMany({
+  const result = await prisma.favorite.findMany({
     where:{
       boardId:+boardId
     }
   });
+  console.log("FDDFDFFFD");
+  console.log(result)
+  if(result) {
+    return result;
+  }
+}
+
+export const getfavoriteCount = async() => {
+  const prisma = new PrismaClient();
+  const result = await prisma.$queryRaw `SELECT COUNT(*) AS count, commentId FROM Favorite GROUP BY commentId`;
 
   if(result) {
     return result;
   }
 }
+
 export default async function handler(req, res) {
   const prisma = new PrismaClient();
   
@@ -30,7 +41,7 @@ export default async function handler(req, res) {
     const boardId = +req.body.boardId;
     console.log(commentId);
     console.log(userId);
-    const result = await prisma.like.create({
+    const result = await prisma.favorite.create({
       data: {
         userId,
         commentId,
@@ -43,7 +54,7 @@ export default async function handler(req, res) {
     //console.log(req.query)
     const boardId = +req.query.id;
     //console.log(commentId);
-    const result = await prisma.like.findMany({
+    const result = await prisma.favorite.findMany({
       where:{
         AND:[
           {userId : session.user.id},
@@ -55,7 +66,7 @@ export default async function handler(req, res) {
         commentId:true
       }
     });
-    console.log(result);
+    //console.log(result);
     if(result) {
       res.json(result);
     }
@@ -66,26 +77,25 @@ export default async function handler(req, res) {
     //const userId = req.body.userId;
     const commentId = +req.body.commentId;
 
-    const deleteRecord = await prisma.like.findFirst({
+    const deleteRecord = await prisma.favorite.findFirst({
       where: {
         AND:[
            {userId : session.user.id},
           {commentId}
         ],
       },
-
       select : {
         id:true
       }
     });
 
     console.log(deleteRecord);
-    const deleteLike = await prisma.like.delete({
+    const deletefavorite = await prisma.favorite.delete({
       where: {
         id:deleteRecord.id
       },
     });
 
-    return deleteLike;
+    return deletefavorite;
   }
 }
