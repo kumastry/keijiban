@@ -27,7 +27,7 @@ model Comment  {
   comment String @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  likes Int @default(0)
+  likes Like []
   board     Board    @relation(fields: [boardId],  references: [id])
   boardId   Int 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -73,6 +73,7 @@ model User {
   boards Board[]
   accounts Account[]
   sessions Session[]
+  likes Like[]
   @@map("user")
 }
 
@@ -87,9 +88,9 @@ model VerificationToken {
 
 model Like {
   id Int @id @default(autoincrement())
-  userId       String
+  userId  String
   commentId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   comment Comment @relation(fields: [commentId], references:[id], onDelete: Cascade)
 }
 
