@@ -34,7 +34,12 @@ export default async function handler(req, res) {
       });
       res.json(result);
     } else if (req.method === "GET") {
-      const comments = await prisma.comment.findMany();
+      const boardId = +req.query.id;
+      const comments = await prisma.comment.findMany({
+        where:{
+          boardId
+        }
+      });
       res.json(comments);
     }
   } else {

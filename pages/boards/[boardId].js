@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { getComments } from "../api/boards/[boardId]/comments";
+import { getLikes } from "../api/boards/[boardId]/comments/[commentId]/like";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -12,7 +13,7 @@ import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -26,15 +27,20 @@ import ListItemText from "@mui/material/ListItemText";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
+
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
 export async function getStaticPaths() {
   const prisma = new PrismaClient();
-  const boards = await prisma.board.findMany();
-  console.log("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+  const boards = await prisma.board.findMany({
+    select: {
+      id:true
+    },
+  });
+  //console.log("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
   console.log(boards);
-  const paths = boards.map((item, key) => {
+  const paths = boards.map((item) => {
     return { params: { boardId: String(item.id) } };
   });
   console.log(paths);
@@ -44,14 +50,31 @@ export async function getStaticPaths() {
   };
 }
 
-export default function board({ comments }) {
+export default function board({ comments, likes }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   console.log(comments);
   const router = useRouter();
-  const { boardId } = router.query;
-  console.log(boardId);
+  const [a, setA] = useState(false);
+  const [likeState, SetLikeState] = useState(() => {
+    const st = new Set();
+    console.log(comments, likes)
+    for(const comment of comments) {
+      for(const like of likes) {
+        console.log(comment, like)
+        if(comment.userId === like.userId && comment.id === like.commentId) {
+          console.log("puttar");
+          st.add(comment.id);
+        }
+      }
+    }
 
+  
+    console.log(st);
+    return st;
+  });
+  const { boardId } = router.query;
+  
   const onSubmit = (data) => {
     console.log(session);
     console.log(boardId);
@@ -62,22 +85,54 @@ export default function board({ comments }) {
     });
   };
 
+  const postLike = (commentId) => {
+    console.log(session.user.id);
+    console.log(boardId)
+    axios.post("../../api/boards/[boardId]/comments/[commentId]/like", {
+    userId:session.user.id,
+    commentId,
+    boardId,
+    }
+    );
+  }
+
+
+
+  const isLiked = (userId, commentId) => {
+    console.log(likes)
+    console.log(userId, commentId)
+    likes.map((like) => {
+      if(like.userId === userId && like.commentId === commentId) {
+        console.log("true")
+        return true;
+
+      }
+    });
+
+    console.log("false")
+    return false;
+  }
+  
+
   return (
     <>
       <main className={styles.main}>
+
         <List>
           {comments.map((item, key) => {
+            console.log(likeState)
             return (
               <ListItem divider>
                 <ListItemText primary={item.comment} />
-
-                <FavoriteBorderIcon />
+                { likeState && likeState.has(item.id) === false ?
+                <FavoriteBorderIcon onClick = {() => setA(!a)}/>
+                :<p onClick = {() => setA(!a)}>いいねした</p>}
               </ListItem>
             );
           })}
         </List>
 
-        {status === "unauthenticated" || (
+        {status === "authenticated" || (
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <TextField
               fullWidth
@@ -107,8 +162,10 @@ export async function getStaticProps(context) {
   const boardId = context.params.boardId;
   console.log(boardId);
   const comments = await getComments(boardId);
-  console.log(comments);
+  const likes = await getLikes(boardId);
+  console.log("lieks")
+  console.log(likes);
   return {
-    props: { comments }, // will be passed to the page component as props
+    props: { comments, likes}, // will be passed to the page component as props
   };
 }
