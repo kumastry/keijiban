@@ -26,7 +26,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
+import IconButton from "@mui/material/IconButton";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -127,10 +127,14 @@ export default function board({ comments, favorites, favoriteCount }) {
               <ListItem divider>
                 
                 <ListItemText primary={item.comment} />
+
+                <IconButton>
                 {favoriteState.has(item.id) === true && status === "authenticated" && isfavorite(session.user.id, item.id) === true?
                 <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/> {favoriteCount.get(String(item.id))}</>:
                 <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favoriteCount.get(String(item.id)) === undefined?0:favoriteCount.get(String(item.id))}</>
                 }
+                </IconButton>
+                
               </ListItem>
             );
           })}

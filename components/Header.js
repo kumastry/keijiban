@@ -8,6 +8,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Avatar from '@mui/material/Avatar';
+
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -17,24 +19,23 @@ export default function Header() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Button color="inherit">
             <Link href="/">kumastry keijiban</Link>
+            </Button>
           </Typography>
 
-          <Button color="inherit">
+          <IconButton color="inherit">
             {status !== "authenticated" ? (
               <Link href="/api/auth/signin">サインイン</Link>
             ) : (
               <Link href="/profile">
-                <Image
+                <Avatar
                   src={session.user.image}
                   alt="icon"
-                  width={50}
-                  height={50}
-                  style={{ borderRadius: "50%" }}
                 />
               </Link>
             )}
-          </Button>
+          </IconButton>
         </Toolbar>
       </AppBar>
     </Box>

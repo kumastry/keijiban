@@ -8,27 +8,32 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from 'next/navigation';
 
 export default function post_keijiban() {
   const { data: session, status } = useSession();
   const { register, handleSubmit } = useForm();
+  const router = useRouter();
 
   console.log(session);
   console.log(status);
 
-  const postKeijiban = (data) => {
+  const postKeijiban = async (data) => {
     console.log(data);
     const { title, category, description } = data;
     //console.log(title);
     //console.log(category);
     //console.log(description);
 
-    axios.post("api/boards", {
+    await axios.post("api/boards", {
       title,
       category,
       description,
       userId: session.user.id,
     });
+
+    router.push("..");
+    
   };
   return (
     <>
