@@ -95,6 +95,13 @@ export default function board({ comments, likes }) {
     
   }
 
+  const deleteLike = (commentId) => {
+    axios.delete("../api/boards/[boardId]/comments/[commentId]/like", {data: {
+      userId:session.user.id,
+      commentId,
+    }})
+  }
+
   const isLike = (userId, commentId) => {
     console.log(likes)
     for(const like of likes) {
@@ -119,7 +126,7 @@ export default function board({ comments, likes }) {
               <ListItem divider>
                 <ListItemText primary={item.comment} />
                 {likeState.has(item.id) === true && status === "authenticated" && isLike(session.user.id, item.id) === true?
-                <FavoriteIcon />:
+                <FavoriteIcon onClick = {() => deleteLike(item.id)}/>:
                 <FavoriteBorderIcon onClick = {() => postLike(item.id)}/>
                 }
               </ListItem>

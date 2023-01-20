@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       },
     });
     res.json(result);
-  } else {
+  } else if(req.method === "GET"){
     //console.log("YUFYUDGFUGSFD")
     //console.log(req.query)
     const boardId = +req.query.id;
@@ -59,5 +59,33 @@ export default async function handler(req, res) {
     if(result) {
       res.json(result);
     }
+  } else if(req.method === "DELETE") {
+    console.log("MOMOMMM");
+
+    console.log(req.body)
+    //const userId = req.body.userId;
+    const commentId = +req.body.commentId;
+
+    const deleteRecord = await prisma.like.findFirst({
+      where: {
+        AND:[
+           {userId : session.user.id},
+          {commentId}
+        ],
+      },
+
+      select : {
+        id:true
+      }
+    });
+
+    console.log(deleteRecord);
+    const deleteLike = await prisma.like.delete({
+      where: {
+        id:deleteRecord.id
+      },
+    });
+
+    return deleteLike;
   }
 }
