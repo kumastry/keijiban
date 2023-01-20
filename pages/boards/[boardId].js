@@ -60,7 +60,7 @@ export default function board({ comments, likes }) {
     for(const comment of comments) {
       for(const like of likes) {
         console.log(comment, like)
-        if(comment.userId === like.userId && comment.id === like.commentId) {
+        if(comment.id === like.commentId) {
           console.log("puttar");
           st.add(comment.id);
         }
@@ -95,6 +95,19 @@ export default function board({ comments, likes }) {
     
   }
 
+  const isLike = (userId, commentId) => {
+    console.log(likes)
+    for(const like of likes) {
+      if(like.userId === userId && like.commentId === commentId) {
+        console.log(like.userId, userId);
+        return true;
+      }
+    };
+
+    
+    return false;
+  }
+
   return (
     <>
       <main className={styles.main}>
@@ -105,7 +118,7 @@ export default function board({ comments, likes }) {
             return (
               <ListItem divider>
                 <ListItemText primary={item.comment} />
-                {likeState.has(item.id) === true && status === "authenticated" && item.userId === session.user.id?
+                {likeState.has(item.id) === true && status === "authenticated" && isLike(session.user.id, item.id) === true?
                 <FavoriteIcon />:
                 <FavoriteBorderIcon onClick = {() => postLike(item.id)}/>
                 }
