@@ -129,7 +129,7 @@ export default function board({ comments, favorites, favoriteCount }) {
                 <ListItemText primary={item.comment} />
                 {favoriteState.has(item.id) === true && status === "authenticated" && isfavorite(session.user.id, item.id) === true?
                 <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/> {favoriteCount.get(String(item.id))}</>:
-                <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favoriteCount.get(String(item.id))}</>
+                <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favoriteCount.get(String(item.id)) === undefined?0:favoriteCount.get(String(item.id))}</>
                 }
               </ListItem>
             );
