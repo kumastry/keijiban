@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { getBoards } from "./api/boards";
+import { getBoards, getBoardCount } from "./api/boards";
 import { getBoard } from "./api/boards/[boardId]";
 import { PrismaClient } from "@prisma/client";
 import Card from "@mui/material/Card";
@@ -17,23 +17,19 @@ import Stack from "@mui/material/Stack";
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 import Header from "../components/Header";
+import  Pagination from "@mui/material/Pagination";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
-export default function Home({ boards }) {
+export default function Home({ boards, boardCount, take }) {
   const { data: session, status } = useSession();
-  console.log(boards);
-  const body = { title: "oo", category: "tesugaku", authorId: "2" };
-  const bt = async () => {
-    const f = await fetch("/api/boards", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+  const router = useRouter();
+  console.log((boardCount + take -1) / boardCount)
+  console.log((boardCount + take -1) / take)
+  const handleChange = (e, page) => {
+    router.push(`/?page=${page}`);
+  }
 
-    console.log(f);
-    console.log(boards);
-  };
   return (
     <>
       <Head>
@@ -69,12 +65,23 @@ export default function Home({ boards }) {
             );
           })}
 
+
           <Link href={"/post_keijiban"}>
             <Fab variant="extended" color="primary" aria-label="add">
               掲示板作成
             </Fab>
           </Link>
+
+          <Pagination 
+          count={Math.floor((boardCount + take -1) / take)} 
+          onChange={handleChange}
+          shape="rounded" 
+          color="primary"
+
+          />
         </Stack>
+
+        
       </main>
     </>
   );
@@ -86,9 +93,11 @@ export async function getServerSideProps({params, query}) {
   console.log("query",query)
   console.log(page);
   const boards = await getBoards(take, (page-1)*take);
+  const boardCount = await getBoardCount();
   console.log(boards);
+  console.log(boardCount);
   console.log("serversidepros");
   return {
-    props: { boards }, // will be passed to the page component as props
+    props: { boards, boardCount, take }, // will be passed to the page component as props
   };
 }

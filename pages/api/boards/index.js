@@ -15,6 +15,17 @@ export async function getBoards(take, skip) {
   return boards;
 }
 
+export async function getBoardCount() {
+  const prisma = new PrismaClient();
+  const count = await prisma.board.count();
+  console.log("IFDFDFIDIFOIDIFO")
+  console.log(count);
+
+  if(count) {
+    return count;
+  }
+}
+
 export default async function handler(req, res) {
   // const secret = process.env.NEXTAUTH_SECRET;
   // console.log(process)
