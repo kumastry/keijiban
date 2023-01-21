@@ -21,9 +21,10 @@ import  Pagination from "@mui/material/Pagination";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function Home({ boards, boardCount, take }) {
+export default function Home({ boards, boardCount, take, page }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  
   console.log((boardCount + take -1) / boardCount)
   console.log((boardCount + take -1) / take)
   const handleChange = (e, page) => {
@@ -41,6 +42,15 @@ export default function Home({ boards, boardCount, take }) {
 
       <main className={styles.main}>
         <Stack spacing={2}>
+
+        <Pagination 
+          count={Math.floor((boardCount + take -1) / take)} 
+          onChange={handleChange}
+          shape="rounded" 
+          color="primary"
+          page={page} 
+          />
+
           {boards.map((board, key) => {
             return (
               <Card sx={{ minWidth: 100, maxWidth: 345 }}>
@@ -77,7 +87,7 @@ export default function Home({ boards, boardCount, take }) {
           onChange={handleChange}
           shape="rounded" 
           color="primary"
-
+          page={page} 
           />
         </Stack>
 
@@ -98,6 +108,6 @@ export async function getServerSideProps({params, query}) {
   console.log(boardCount);
   console.log("serversidepros");
   return {
-    props: { boards, boardCount, take }, // will be passed to the page component as props
+    props: { boards, boardCount, take, page }, // will be passed to the page component as props
   };
 }

@@ -31,24 +31,6 @@ import IconButton from "@mui/material/IconButton";
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
-export async function getStaticPaths() {
-  const prisma = new PrismaClient();
-  const boards = await prisma.board.findMany({
-    select: {
-      id:true
-    },
-  });
-  //console.log("WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-  console.log(boards);
-  const paths = boards.map((item) => {
-    return { params: { boardId: String(item.id) } };
-  });
-  console.log(paths);
-  return {
-    paths,
-    fallback: false, // can also be true or 'blocking'
-  };
-}
 
 export default function board({ comments, favorites, favoriteCount }) {
   const { register, handleSubmit } = useForm();
@@ -166,7 +148,7 @@ export default function board({ comments, favorites, favoriteCount }) {
   );
 }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const boardId = context.params.boardId;
   //console.log(boardId);
   const comments = await getComments(boardId);
