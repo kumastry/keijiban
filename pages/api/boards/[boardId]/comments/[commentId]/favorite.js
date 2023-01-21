@@ -7,7 +7,7 @@ export const getfavorites = async (boardId) => {
   const prisma = new PrismaClient();
   const result = await prisma.favorite.findMany({
     where:{
-      boardId:+boardId
+      boardId
     }
   });
   console.log("FDDFDFFFD");

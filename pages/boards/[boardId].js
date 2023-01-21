@@ -36,7 +36,8 @@ export default function board({ comments, favorites, favoriteCount }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log(favoriteCount);
+  const [favCnt, setFavCnt] = useState(favoriteCount);
+  const [val, setVal] = useState(0);
   const [favoriteState, SetfavoriteState] = useState(() => {
     const st = new Set();
     console.log(comments, favorites)
@@ -69,13 +70,29 @@ export default function board({ comments, favorites, favoriteCount }) {
     console.log(session.user.id);
     console.log(boardId);
     console.log(commentId);
-    
+    const cnt = favCnt.get(String(commentId));
+    console.log(favCnt)
+    console.log(cnt);
+    setFavCnt((prev) => {
+      const next = new Map(prev);
+      console.log(prev);
+      console.log(next);
+      if(cnt === undefined) {
+        next.set(String(commentId), String(1));
+      } else {
+        next.set(String(commentId), String(Number(cnt)+1));
+      }
+
+      console.log(next)
+      return next;
+    });
     axios.post("../api/boards/[boardId]/comments/[commentId]/favorite", {
       userId:session.user.id,
       commentId,
       boardId,
     });
-    
+
+
   }
 
   const deletefavorite = (commentId) => {
@@ -101,19 +118,18 @@ export default function board({ comments, favorites, favoriteCount }) {
   return (
     <>
       <main className={styles.main}>
-
+        <p onClick={() => setVal(val+1)}>{val}</p>
         <List>
           {comments.map((item, key) => {
-            console.log(favoriteState)
             return (
               <ListItem divider>
                 
                 <ListItemText primary={item.comment} />
-
+                {item.id}
                 <IconButton>
-                {favoriteState.has(item.id) === true && status === "authenticated" && isfavorite(session.user.id, item.id) === true?
-                <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/> {favoriteCount.get(String(item.id))}</>:
-                <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favoriteCount.get(String(item.id)) === undefined?0:favoriteCount.get(String(item.id))}</>
+                { status === "authenticated" && isfavorite(session.user.id, item.id) === true?
+                <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>    {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>:
+                <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>
                 }
                 </IconButton>
 
@@ -149,17 +165,26 @@ export default function board({ comments, favorites, favoriteCount }) {
 }
 
 export async function getServerSideProps(context) {
-  const boardId = context.params.boardId;
-  //console.log(boardId);
+  const boardId = +context.params.boardId;
+  console.log("serversideprops boradId");
+
+  //commentテーブルからあるboardIdのレコード抽出
   const comments = await getComments(boardId);
+
+  //favoriteテーブルからあるboardIdのレコードを抽出
   const favorites = await getfavorites(boardId);
+
+  //あるcommentIdのレコード数をカウント
   const fav = await getfavoriteCount();
+
+  //???
   const favoriteCount = new Map();
   for(const element of fav) {
     favoriteCount.set(String(element.commentid), String(element.count));
   }
   console.log("lieks")
   console.log(favoriteCount);
+
   return {
     props: { comments, favorites, favoriteCount } // will be passed to the page component as props
   };

@@ -11,7 +11,7 @@ export const getComments = async (boardId) => {
   const prisma = new PrismaClient();
   const comments = await prisma.comment.findMany({
     where: {
-      boardId: +boardId,
+      boardId,
     },
   });
   return comments;
