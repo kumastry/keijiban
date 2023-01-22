@@ -5,11 +5,12 @@ import { unstable_getServerSession } from "next-auth/next";
 
 export const getfavorites = async (boardId, session) => {
   const prisma = new PrismaClient();
+  console.log("bad", session.user.id)
   const result = await prisma.favorite.findMany({
     where:{
       AND:[
         {boardId},
-        {userId:session.user.Id}
+        {userId:session.user.id}
       ]
       
     }
@@ -79,7 +80,7 @@ export default async function handler(req, res) {
     console.log(req.body)
     //const userId = req.body.userId;
     const commentId = +req.body.commentId;
-
+    
     const deleteRecord = await prisma.favorite.findFirst({
       where: {
         AND:[

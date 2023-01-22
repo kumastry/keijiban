@@ -143,6 +143,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   }
 
   const isfavorite = (commentId, useId) => {
+    console.log(favState);
     for(const fav of favState) {
       if(commentId === fav.commentId) {
         return true;
@@ -151,6 +152,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
     return false;
   }
+  
 
   return (
     <>
@@ -253,6 +255,7 @@ export async function getServerSideProps(context) {
   }
   console.log("lieks")
   console.log(favoriteCount);
+  console.log(session.user.id)
   console.log(favorites);
 
   return {
