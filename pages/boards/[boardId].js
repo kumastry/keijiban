@@ -40,9 +40,9 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
-  const [val, setVal] = useState(0);
- 
-
+  const { boardId } = router.query;
+  console.log(router);
+  
   const handleChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
   }
@@ -64,7 +64,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
     return st;
   });*/
 
-  const { boardId } = router.query;
+  
   
   const onSubmit = (data) => {
     console.log(session);
@@ -135,6 +135,15 @@ export default function board({ comments, favorites, favoriteCount, commentCount
           page={page} 
       />
 
+<Pagination 
+          count={Math.floor((commentCount + take -1) / take)} 
+          onChange={handleChange}
+          shape="rounded" 
+          color="primary"
+          page={page} 
+          />
+
+
         <List>
           {comments.map((item, key) => {
             return (
@@ -179,7 +188,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 }
 
 export async function getServerSideProps(context) {
-  const pages = +context.query.page || 1;
+  const page = +context.query.page || 1;
   const take = 2;
 
   const boardId = +context.params.boardId;
@@ -187,7 +196,7 @@ export async function getServerSideProps(context) {
   const session = await unstable_getServerSession(context.req, context.res, authOptions);
   
   //commentテーブルからあるboardIdのレコード抽出
-  const comments = await getComments(boardId, take, (pages-1)*take);
+  const comments = await getComments(boardId, take, (page-1)*take);
   const commentCount = await getCommentCount();
 
 
@@ -196,6 +205,8 @@ export async function getServerSideProps(context) {
 
   //あるcommentIdのレコード数をカウント
   const fav = await getfavoriteCount();
+
+  //promise.allで高速化可能
 
   //???
   const favoriteCount = new Map();
@@ -207,6 +218,6 @@ export async function getServerSideProps(context) {
   console.log(favorites);
 
   return {
-    props: { comments, favorites, favoriteCount, commentCount, take, pages } // will be passed to the page component as props
+    props: { comments, favorites, favoriteCount, commentCount, take, page } // will be passed to the page component as props
   };
 }
