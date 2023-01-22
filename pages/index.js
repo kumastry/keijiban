@@ -98,7 +98,7 @@ export default function Home({ boards, boardCount, take, page }) {
 }
 
 export async function getServerSideProps({params, query}) {
-  const page = +query.page;
+  const page = +query.page || 1;
   const take = 5;
   console.log("query",query)
   console.log(page);

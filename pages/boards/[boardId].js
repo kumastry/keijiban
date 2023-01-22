@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { getComments } from "../api/boards/[boardId]/comments";
+import { getComments, getCommentCount } from "../api/boards/[boardId]/comments";
 import { getfavorites, getfavoriteCount } from "../api/boards/[boardId]/comments/[commentId]/favorite";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -27,17 +27,27 @@ import ListItemText from "@mui/material/ListItemText";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import IconButton from "@mui/material/IconButton";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from '../api/auth/[...nextauth]';
+import  Pagination from "@mui/material/Pagination";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
 
-export default function board({ comments, favorites, favoriteCount }) {
+export default function board({ comments, favorites, favoriteCount, commentCount,take, page }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
   const [val, setVal] = useState(0);
+ 
+
+  const handleChange = (e, page) => {
+    router.push(`/boards/${boardId}?page=${page}`);
+  }
+
+  /*
   const [favoriteState, SetfavoriteState] = useState(() => {
     const st = new Set();
     console.log(comments, favorites)
@@ -52,7 +62,7 @@ export default function board({ comments, favorites, favoriteCount }) {
     }
     console.log(st);
     return st;
-  });
+  });*/
 
   const { boardId } = router.query;
   
@@ -67,6 +77,7 @@ export default function board({ comments, favorites, favoriteCount }) {
   };
 
   const postfavorite = (commentId) => {
+    /*
     console.log(session.user.id);
     console.log(boardId);
     console.log(commentId);
@@ -85,7 +96,7 @@ export default function board({ comments, favorites, favoriteCount }) {
 
       console.log(next)
       return next;
-    });
+    });*/
     axios.post("../api/boards/[boardId]/comments/[commentId]/favorite", {
       userId:session.user.id,
       commentId,
@@ -102,34 +113,37 @@ export default function board({ comments, favorites, favoriteCount }) {
     }})
   }
 
-  const isfavorite = (userId, commentId) => {
-    console.log(favorites)
-    for(const favorite of favorites) {
-      if(favorite.userId === userId && favorite.commentId === commentId) {
-        console.log(favorite.userId, userId);
+  const isfavorite = (commentId) => {
+    for(const fav of favorites) {
+      if(commentId === fav.commentId) {
         return true;
       }
-    };
+    }
 
-    
     return false;
   }
 
   return (
     <>
       <main className={styles.main}>
-        <p onClick={() => setVal(val+1)}>{val}</p>
+        
+      <Pagination 
+          count={Math.floor((commentCount + take -1) / take)} 
+          onChange={handleChange}
+          shape="rounded" 
+          color="primary"
+          page={page} 
+      />
+
         <List>
           {comments.map((item, key) => {
             return (
               <ListItem divider>
-                
                 <ListItemText primary={item.comment} />
-                {item.id}
                 <IconButton>
-                { status === "authenticated" && isfavorite(session.user.id, item.id) === true?
+                {status === "authenticated" && isfavorite(session.user.id, item.id) === true?
                 <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>    {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>:
-                <><FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>
+                <> <FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>
                 }
                 </IconButton>
 
@@ -165,14 +179,20 @@ export default function board({ comments, favorites, favoriteCount }) {
 }
 
 export async function getServerSideProps(context) {
+  const pages = +context.query.page || 1;
+  const take = 2;
+
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
-
+  const session = await unstable_getServerSession(context.req, context.res, authOptions);
+  
   //commentテーブルからあるboardIdのレコード抽出
-  const comments = await getComments(boardId);
+  const comments = await getComments(boardId, take, (pages-1)*take);
+  const commentCount = await getCommentCount();
+
 
   //favoriteテーブルからあるboardIdのレコードを抽出
-  const favorites = await getfavorites(boardId);
+  const favorites = await getfavorites(boardId,session);
 
   //あるcommentIdのレコード数をカウント
   const fav = await getfavoriteCount();
@@ -184,8 +204,9 @@ export async function getServerSideProps(context) {
   }
   console.log("lieks")
   console.log(favoriteCount);
+  console.log(favorites);
 
   return {
-    props: { comments, favorites, favoriteCount } // will be passed to the page component as props
+    props: { comments, favorites, favoriteCount, commentCount, take, pages } // will be passed to the page component as props
   };
 }

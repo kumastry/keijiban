@@ -3,15 +3,18 @@ import { authOptions } from "../../../../auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth/next";
 
 
-export const getfavorites = async (boardId) => {
+export const getfavorites = async (boardId, session) => {
   const prisma = new PrismaClient();
   const result = await prisma.favorite.findMany({
     where:{
-      boardId
+      AND:[
+        {boardId},
+        {userId:session.user.Id}
+      ]
+      
     }
   });
-  console.log("FDDFDFFFD");
-  console.log(result)
+  console.log(result);
   if(result) {
     return result;
   }

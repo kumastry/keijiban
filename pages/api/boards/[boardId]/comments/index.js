@@ -7,12 +7,20 @@ import { authOptions } from "../../../auth/[...nextauth]";
 // comment, boardId, authorIdが必須
 // GETはクエリが必要
 
-export const getComments = async (boardId) => {
+export const getCommentCount = async () => {
+  const prisma = new PrismaClient();
+  const comment = await prisma.comment.count();
+  return comment;
+}
+
+export const getComments = async (boardId, take, skip) => {
   const prisma = new PrismaClient();
   const comments = await prisma.comment.findMany({
     where: {
       boardId,
     },
+    take, 
+    skip
   });
   return comments;
 };
