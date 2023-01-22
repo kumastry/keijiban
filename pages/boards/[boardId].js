@@ -78,15 +78,10 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   };
 
   const postfavorite = (commentId) => {
-    /*
-    console.log(session.user.id);
-    console.log(boardId);
-    console.log(commentId);
-    const cnt = favCnt.get(String(commentId));
-    console.log(favCnt)
-    console.log(cnt);
+
     setFavCnt((prev) => {
       const next = new Map(prev);
+      const cnt = favCnt.get(String(commentId));
       console.log(prev);
       console.log(next);
       if(cnt === undefined) {
@@ -97,14 +92,22 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
       console.log(next)
       return next;
-    });*/
+    });
     axios.post("../api/boards/[boardId]/comments/[commentId]/favorite", {
       userId:session.user.id,
       commentId,
       boardId,
     });
 
+    setFavState((prev) => {
+      const next = [...prev];
+      console.log(prev, next);
+      next.push({commentId});
+      console.log("next", next);
+      return next;
+    });
 
+    //favを
   }
 
   const deletefavorite = (commentId) => {
@@ -116,9 +119,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
   const isfavorite = (commentId) => {
     for(const fav of favState) {
-      console.log(fav, commentId)
       if(commentId === fav.commentId) {
-        console.log("fafafafa")
         return true;
       }
     }
