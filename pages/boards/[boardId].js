@@ -79,20 +79,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
   const postfavorite = (commentId) => {
 
-    setFavCnt((prev) => {
-      const next = new Map(prev);
-      const cnt = favCnt.get(String(commentId));
-      console.log(prev);
-      console.log(next);
-      if(cnt === undefined) {
-        next.set(String(commentId), String(1));
-      } else {
-        next.set(String(commentId), String(Number(cnt)+1));
-      }
 
-      console.log(next)
-      return next;
-    });
     axios.post("../api/boards/[boardId]/comments/[commentId]/favorite", {
       userId:session.user.id,
       commentId,
@@ -107,6 +94,20 @@ export default function board({ comments, favorites, favoriteCount, commentCount
       return next;
     });
 
+    setFavCnt((prev) => {
+      const next = new Map(prev);
+      const cnt = favCnt.get(String(commentId));
+      console.log(prev);
+      console.log(next);
+      if(cnt === undefined) {
+        next.set(String(commentId), String(1));
+      } else {
+        next.set(String(commentId), String(Number(cnt)+1));
+      }
+
+      console.log(next)
+      return next;
+    });
     //favを
   }
 
@@ -114,10 +115,34 @@ export default function board({ comments, favorites, favoriteCount, commentCount
     axios.delete("../api/boards/[boardId]/comments/[commentId]/favorite", {data: {
       userId:session.user.id,
       commentId,
-    }})
+    }});
+
+    setFavState(prev=> {
+      let next = [...prev]
+      console.log(commentId)
+      console.log(prev, next);
+      next = next.filter(element => element.commentId !== commentId)
+      console.log(prev, next);
+      return next;
+    });
+
+    setFavCnt((prev) => {
+      const next = new Map(prev);
+      const cnt = favCnt.get(String(commentId));
+      console.log(prev);
+      console.log(next);
+      if(cnt === undefined) {
+        next.set(String(commentId), String(1));
+      } else {
+        next.set(String(commentId), String(Number(cnt)-1));
+      }
+
+      console.log(next)
+      return next;
+    });
   }
 
-  const isfavorite = (commentId) => {
+  const isfavorite = (commentId, useId) => {
     for(const fav of favState) {
       if(commentId === fav.commentId) {
         return true;
@@ -154,7 +179,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
               <ListItem divider>
                 <ListItemText primary={item.comment} />
                 <IconButton>
-                {status === "authenticated" && isfavorite(item.id) === true?
+                {status === "authenticated" && isfavorite(item.id, session.user.id) === true?
                 <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>    {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>:
                 <> <FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>
                 }
