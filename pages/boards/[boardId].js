@@ -40,6 +40,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
+  const [favState, setFavState] = useState(favorites);
   const { boardId } = router.query;
   console.log(router);
   
@@ -114,8 +115,10 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   }
 
   const isfavorite = (commentId) => {
-    for(const fav of favorites) {
+    for(const fav of favState) {
+      console.log(fav, commentId)
       if(commentId === fav.commentId) {
+        console.log("fafafafa")
         return true;
       }
     }
@@ -150,7 +153,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
               <ListItem divider>
                 <ListItemText primary={item.comment} />
                 <IconButton>
-                {status === "authenticated" && isfavorite(session.user.id, item.id) === true?
+                {status === "authenticated" && isfavorite(item.id) === true?
                 <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>    {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>:
                 <> <FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>
                 }
@@ -189,22 +192,31 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
 export async function getServerSideProps(context) {
   const page = +context.query.page || 1;
-  const take = 2;
+  const take = 50;
 
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
   const session = await unstable_getServerSession(context.req, context.res, authOptions);
   
   //commentテーブルからあるboardIdのレコード抽出
-  const comments = await getComments(boardId, take, (page-1)*take);
-  const commentCount = await getCommentCount();
+  //const comments = await getComments(boardId, take, (page-1)*take);
+  //const commentCount = await getCommentCount();
 
 
   //favoriteテーブルからあるboardIdのレコードを抽出
-  const favorites = await getfavorites(boardId,session);
+  //const favorites = await getfavorites(boardId,session);
 
   //あるcommentIdのレコード数をカウント
-  const fav = await getfavoriteCount();
+  //const fav = await getfavoriteCount();
+
+  const [comments, commentCount, favorites, fav] = await Promise.all([
+    getComments(boardId, take, (page-1)*take),
+    getCommentCount(),
+    getfavorites(boardId,session),
+    getfavoriteCount(),
+  ]
+  );
+
 
   //promise.allで高速化可能
 
