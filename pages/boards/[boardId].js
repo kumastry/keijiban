@@ -30,10 +30,25 @@ import IconButton from "@mui/material/IconButton";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from '../api/auth/[...nextauth]';
 import  Pagination from "@mui/material/Pagination";
+import  Modal from "@mui/material/Modal";
+import Box from '@mui/material/Box';
+import { MenuItem } from "@mui/material";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 
 export default function board({ comments, favorites, favoriteCount, commentCount,take, page }) {
   const { register, handleSubmit } = useForm();
@@ -41,6 +56,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
   const [favState, setFavState] = useState(favorites);
+  const [openReportModal, setOpenReportModal] = useState(false);
   const { boardId } = router.query;
   console.log(router);
   
@@ -166,13 +182,6 @@ export default function board({ comments, favorites, favoriteCount, commentCount
           page={page} 
       />
 
-<Pagination 
-          count={Math.floor((commentCount + take -1) / take)} 
-          onChange={handleChange}
-          shape="rounded" 
-          color="primary"
-          page={page} 
-          />
 
 
         <List>
@@ -182,10 +191,15 @@ export default function board({ comments, favorites, favoriteCount, commentCount
                 <ListItemText primary={item.comment} />
                 <IconButton>
                 {status === "authenticated" && isfavorite(item.id, session.user.id) === true?
-                <> <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>    {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>:
-                <> <FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}</>
+                 <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>   :
+                 <FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> 
                 }
+                
                 </IconButton>
+                {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}
+                {/*<Button onClick={() => setOpenReportModal(true)}>
+                  通報
+              </Button>*/}
 
               </ListItem>
             );
@@ -213,6 +227,47 @@ export default function board({ comments, favorites, favoriteCount, commentCount
             </Button>
           </form>
         )}
+        
+        
+        <Pagination 
+          count={Math.floor((commentCount + take -1) / take)} 
+          onChange={handleChange}
+          shape="rounded" 
+          color="primary"
+          page={page} 
+          />
+
+        <Modal
+        
+        open={openReportModal}
+        onClose={() => setOpenReportModal}
+        aria-labelledby="report modal"
+        >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+           通報フォーム
+          </Typography>
+
+          <form>
+          <TextField
+                id="standard-select-currency"
+                select
+                label="カテゴリー"
+                helperText="カテゴリーを選択"
+                variant="standard"
+                style={{ width: "30%" }}
+
+              >
+                <MenuItem value="aaa">あああ</MenuItem>
+                <MenuItem value="aaa">あああ</MenuItem>
+                <MenuItem value="aaa">あああ</MenuItem>
+                <MenuItem value="aaa">あああ</MenuItem>
+              </TextField>
+              </form>
+
+        </Box>
+
+        </Modal>
       </main>
     </>
   );
