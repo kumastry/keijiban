@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { getComments, getCommentCount } from "../api/boards/[boardId]/comments";
+import { getComments, getCommentCount, getCommentUserId, getUser } from "../api/boards/[boardId]/comments";
 import { getfavorites, getfavoriteCount } from "../api/boards/[boardId]/comments/[commentId]/favorite";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -33,6 +33,7 @@ import  Pagination from "@mui/material/Pagination";
 import  Modal from "@mui/material/Modal";
 import Box from '@mui/material/Box';
 import { MenuItem } from "@mui/material";
+import Avatar from '@mui/material/Avatar';
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -50,7 +51,7 @@ const style = {
 };
 
 
-export default function board({ comments, favorites, favoriteCount, commentCount,take, page }) {
+export default function board({ comments, favorites, favoriteCount, commentCount,take, page,commentUsers }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -59,6 +60,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   const [openReportModal, setOpenReportModal] = useState(false);
   const { boardId } = router.query;
   console.log(router);
+  console.log(commentUsers)
   
   const handleChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
@@ -186,8 +188,14 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
         <List>
           {comments.map((item, key) => {
+            console.log(key);
             return (
               <ListItem divider>
+                <Avatar
+                src = {commentUsers[key].image}
+                alt = {"icon"}
+                />
+                <p>{commentUsers[key].name}</p>
                 <ListItemText primary={item.comment} />
                 <IconButton>
                 {status === "authenticated" && isfavorite(item.id, session.user.id) === true?
@@ -196,7 +204,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
                 }
                 
                 </IconButton>
-                {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}
+              {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}
                 {/*<Button onClick={() => setOpenReportModal(true)}>
                   通報
               </Button>*/}
@@ -292,15 +300,20 @@ export async function getServerSideProps(context) {
   //あるcommentIdのレコード数をカウント
   //const fav = await getfavoriteCount();
 
-  const [comments, commentCount, favorites, fav] = await Promise.all([
+  //概要を作成
+  //const description = await getDes
+
+  const [comments, commentCount, favorites, fav, commentUserIds] = await Promise.all(
+    [
     getComments(boardId, take, (page-1)*take),
     getCommentCount(),
     getfavorites(boardId,session),
     getfavoriteCount(),
+    getCommentUserId(boardId, take, (page-1)*take)
   ]
   );
 
-
+  const commentUsers = await Promise.all(commentUserIds.map(element => getUser(element.userId)));
   //promise.allで高速化可能
 
   //???
@@ -308,12 +321,14 @@ export async function getServerSideProps(context) {
   for(const element of fav) {
     favoriteCount.set(String(element.commentid), String(element.count));
   }
-  console.log("lieks")
+  console.log("lieks");
+  console.log(commentUsers);
+  console.log(comments);
   console.log(favoriteCount);
   console.log(session.user.id)
   console.log(favorites);
 
   return {
-    props: { comments, favorites, favoriteCount, commentCount, take, page } // will be passed to the page component as props
+    props: { comments, favorites, favoriteCount, commentCount, take, page, commentUsers } // will be passed to the page component as props
   };
 }

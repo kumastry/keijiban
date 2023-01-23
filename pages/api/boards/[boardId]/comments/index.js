@@ -13,6 +13,32 @@ export const getCommentCount = async () => {
   return comment;
 }
 
+export const getUser = async userId => {
+  const prisma = new PrismaClient();
+  const user = await prisma.user.findUnique({
+    where:{
+      id:userId
+    }
+  });
+
+  return user;
+}
+
+export const getCommentUserId = async (boardId, take, skip) => {
+  const prisma = new PrismaClient();
+  const commentUserId = await prisma.comment.findMany({
+    where: {
+      boardId,
+    },
+    select:{
+      userId:true
+    },
+    take, 
+    skip
+  });
+  return commentUserId;
+};
+
 export const getComments = async (boardId, take, skip) => {
   const prisma = new PrismaClient();
   const comments = await prisma.comment.findMany({
