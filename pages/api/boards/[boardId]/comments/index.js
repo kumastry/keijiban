@@ -7,50 +7,6 @@ import { authOptions } from "../../../auth/[...nextauth]";
 // comment, boardId, authorIdが必須
 // GETはクエリが必要
 
-export const getCommentCount = async () => {
-  const prisma = new PrismaClient();
-  const comment = await prisma.comment.count();
-  return comment;
-}
-
-export const getUser = async userId => {
-  const prisma = new PrismaClient();
-  const user = await prisma.user.findUnique({
-    where:{
-      id:userId
-    }
-  });
-
-  return user;
-}
-
-export const getCommentUserId = async (boardId, take, skip) => {
-  const prisma = new PrismaClient();
-  const commentUserId = await prisma.comment.findMany({
-    where: {
-      boardId,
-    },
-    select:{
-      userId:true
-    },
-    take, 
-    skip
-  });
-  return commentUserId;
-};
-
-export const getComments = async (boardId, take, skip) => {
-  const prisma = new PrismaClient();
-  const comments = await prisma.comment.findMany({
-    where: {
-      boardId,
-    },
-    take, 
-    skip
-  });
-  return comments;
-};
-
 export default async function handler(req, res) {
   const session = await unstable_getServerSession(req, res, authOptions);
   const prisma = new PrismaClient();

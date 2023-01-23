@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { getComments, getCommentCount, getCommentUserId, getUser } from "../api/boards/[boardId]/comments";
-import { getfavorites, getfavoriteCount } from "../api/boards/[boardId]/comments/[commentId]/favorite";
+import {getComments, getCommentCount, getCommentUserId, getUser, getBoard, getfavorites, getfavoriteCount} from "../api/getDatabese";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -303,13 +302,15 @@ export async function getServerSideProps(context) {
   //概要を作成
   //const description = await getDes
 
-  const [comments, commentCount, favorites, fav, commentUserIds] = await Promise.all(
+  const [comments, commentCount, favorites, fav, commentUserIds, board, boardUser] = await Promise.all(
     [
     getComments(boardId, take, (page-1)*take),
     getCommentCount(),
     getfavorites(boardId,session),
     getfavoriteCount(),
-    getCommentUserId(boardId, take, (page-1)*take)
+    getCommentUserId(boardId, take, (page-1)*take),
+    getBoard(boardId),
+    getUser(session.user.id)
   ]
   );
 
@@ -329,6 +330,6 @@ export async function getServerSideProps(context) {
   console.log(favorites);
 
   return {
-    props: { comments, favorites, favoriteCount, commentCount, take, page, commentUsers } // will be passed to the page component as props
+    props: { comments, favorites, favoriteCount, commentCount, take, page, commentUsers, board, boardUser } // will be passed to the page component as props
   };
 }

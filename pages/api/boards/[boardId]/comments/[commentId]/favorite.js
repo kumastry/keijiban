@@ -2,34 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { authOptions } from "../../../../auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth/next";
 
-
-export const getfavorites = async (boardId, session) => {
-  const prisma = new PrismaClient();
-  console.log("bad", session.user.id)
-  const result = await prisma.favorite.findMany({
-    where:{
-      AND:[
-        {boardId},
-        {userId:session.user.id}
-      ]
-      
-    }
-  });
-  console.log(result);
-  if(result) {
-    return result;
-  }
-}
-
-export const getfavoriteCount = async() => {
-  const prisma = new PrismaClient();
-  const result = await prisma.$queryRaw `SELECT COUNT(*) AS count, commentId FROM Favorite GROUP BY commentId`;
-
-  if(result) {
-    return result;
-  }
-}
-
 export default async function handler(req, res) {
   const prisma = new PrismaClient();
   
