@@ -17,19 +17,20 @@ import Stack from "@mui/material/Stack";
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 import Header from "../components/Header";
-import  Pagination from "@mui/material/Pagination";
+import Pagination from "@mui/material/Pagination";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { Grid, Box } from "@mui/material";
 
 export default function Home({ boards, boardCount, take, page }) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  
-  console.log((boardCount + take -1) / boardCount)
-  console.log((boardCount + take -1) / take)
+
+  console.log((boardCount + take - 1) / boardCount);
+  console.log((boardCount + take - 1) / take);
   const handleChange = (e, page) => {
     router.push(`/?page=${page}`);
-  }
+  };
 
   return (
     <>
@@ -40,17 +41,25 @@ export default function Home({ boards, boardCount, take, page }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+      >
+        <Box component="pagination" sx={{}}>
+          <Pagination
+            count={Math.floor((boardCount + take - 1) / take)}
+            onChange={handleChange}
+            shape="rounded"
+            color="primary"
+            page={page}
+          />
+        </Box>
+      </Grid>
+
       <main className={styles.main}>
         <Stack spacing={2}>
-
-        <Pagination 
-          count={Math.floor((boardCount + take -1) / take)} 
-          onChange={handleChange}
-          shape="rounded" 
-          color="primary"
-          page={page} 
-          />
-
           {boards.map((board, key) => {
             return (
               <Card sx={{ minWidth: 100, maxWidth: 345 }}>
@@ -75,34 +84,40 @@ export default function Home({ boards, boardCount, take, page }) {
             );
           })}
 
-
           <Link href={"/post_keijiban"}>
             <Fab variant="extended" color="primary" aria-label="add">
               掲示板作成
             </Fab>
           </Link>
-
-          <Pagination 
-          count={Math.floor((boardCount + take -1) / take)} 
-          onChange={handleChange}
-          shape="rounded" 
-          color="primary"
-          page={page} 
-          />
         </Stack>
-
-        
       </main>
+
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+      >
+        <Box component="pagination" sx={{}}>
+          <Pagination
+            count={Math.floor((boardCount + take - 1) / take)}
+            onChange={handleChange}
+            shape="rounded"
+            color="primary"
+            page={page}
+          />
+        </Box>
+      </Grid>
     </>
   );
 }
 
-export async function getServerSideProps({params, query}) {
+export async function getServerSideProps({ params, query }) {
   const page = +query.page || 1;
   const take = 5;
-  console.log("query",query)
+  console.log("query", query);
   console.log(page);
-  const boards = await getBoards(take, (page-1)*take);
+  const boards = await getBoards(take, (page - 1) * take);
   const boardCount = await getBoardCount();
   console.log(boards);
   console.log(boardCount);

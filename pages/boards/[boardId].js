@@ -1,6 +1,14 @@
 import Head from "next/head";
 import Image from "next/image";
-import {getComments, getCommentCount, getCommentUserId, getUser, getBoard, getfavorites, getfavoriteCount} from "../api/getDatabese";
+import {
+  getComments,
+  getCommentCount,
+  getCommentUserId,
+  getUser,
+  getBoard,
+  getfavorites,
+  getfavoriteCount,
+} from "../api/getDatabese";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -27,32 +35,39 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import IconButton from "@mui/material/IconButton";
 import { unstable_getServerSession } from "next-auth/next";
-import { authOptions } from '../api/auth/[...nextauth]';
-import  Pagination from "@mui/material/Pagination";
-import  Modal from "@mui/material/Modal";
-import Box from '@mui/material/Box';
+import { authOptions } from "../api/auth/[...nextauth]";
+import Pagination from "@mui/material/Pagination";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import { MenuItem } from "@mui/material";
-import Avatar from '@mui/material/Avatar';
-import Grid from '@mui/material/Grid';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from "@mui/material/Avatar";
+import Grid from "@mui/material/Grid";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
-
-export default function board({ comments, favorites, favoriteCount, commentCount,take, page,commentUsers }) {
+export default function board({
+  comments,
+  favorites,
+  favoriteCount,
+  commentCount,
+  take,
+  page,
+  commentUsers,
+}) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -61,11 +76,11 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   const [openReportModal, setOpenReportModal] = useState(false);
   const { boardId } = router.query;
   console.log(router);
-  console.log(commentUsers)
-  
+  console.log(commentUsers);
+
   const handleChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
-  }
+  };
 
   /*
   const [favoriteState, SetfavoriteState] = useState(() => {
@@ -84,8 +99,6 @@ export default function board({ comments, favorites, favoriteCount, commentCount
     return st;
   });*/
 
-  
-  
   const onSubmit = (data) => {
     console.log(session);
     console.log(boardId);
@@ -97,10 +110,8 @@ export default function board({ comments, favorites, favoriteCount, commentCount
   };
 
   const postfavorite = (commentId) => {
-
-
     axios.post("../api/boards/[boardId]/comments/[commentId]/favorite", {
-      userId:session.user.id,
+      userId: session.user.id,
       commentId,
       boardId,
     });
@@ -108,7 +119,7 @@ export default function board({ comments, favorites, favoriteCount, commentCount
     setFavState((prev) => {
       const next = [...prev];
       console.log(prev, next);
-      next.push({commentId});
+      next.push({ commentId });
       console.log("next", next);
       return next;
     });
@@ -118,29 +129,31 @@ export default function board({ comments, favorites, favoriteCount, commentCount
       const cnt = favCnt.get(String(commentId));
       console.log(prev);
       console.log(next);
-      if(cnt === undefined) {
+      if (cnt === undefined) {
         next.set(String(commentId), String(1));
       } else {
-        next.set(String(commentId), String(Number(cnt)+1));
+        next.set(String(commentId), String(Number(cnt) + 1));
       }
 
-      console.log(next)
+      console.log(next);
       return next;
     });
     //favを
-  }
+  };
 
   const deletefavorite = (commentId) => {
-    axios.delete("../api/boards/[boardId]/comments/[commentId]/favorite", {data: {
-      userId:session.user.id,
-      commentId,
-    }});
+    axios.delete("../api/boards/[boardId]/comments/[commentId]/favorite", {
+      data: {
+        userId: session.user.id,
+        commentId,
+      },
+    });
 
-    setFavState(prev=> {
-      let next = [...prev]
-      console.log(commentId)
+    setFavState((prev) => {
+      let next = [...prev];
+      console.log(commentId);
       console.log(prev, next);
-      next = next.filter(element => element.commentId !== commentId)
+      next = next.filter((element) => element.commentId !== commentId);
       console.log(prev, next);
       return next;
     });
@@ -150,76 +163,77 @@ export default function board({ comments, favorites, favoriteCount, commentCount
       const cnt = favCnt.get(String(commentId));
       console.log(prev);
       console.log(next);
-      if(cnt === undefined) {
+      if (cnt === undefined) {
         next.set(String(commentId), String(1));
       } else {
-        next.set(String(commentId), String(Number(cnt)-1));
+        next.set(String(commentId), String(Number(cnt) - 1));
       }
 
-      console.log(next)
+      console.log(next);
       return next;
     });
-  }
+  };
 
   const isfavorite = (commentId, useId) => {
     console.log(favState);
-    for(const fav of favState) {
-      if(commentId === fav.commentId) {
+    for (const fav of favState) {
+      if (commentId === fav.commentId) {
         return true;
       }
     }
 
     return false;
-  }
-  
+  };
 
   return (
     <>
-        <Grid container alignItems='center' justifyContent='center' direction="column">
-    <Box
-    component="pagination" 
-    sx = {{
-
-    }} >
-    <Pagination 
-          count={Math.floor((commentCount + take -1) / take)} 
-          onChange={handleChange}
-          shape="rounded" 
-          color="primary"
-          page={page} 
-    />
-    </Box>
-    </Grid>
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+      >
+        <Box component="pagination" sx={{}}>
+          <Pagination
+            count={Math.floor((commentCount + take - 1) / take)}
+            onChange={handleChange}
+            shape="rounded"
+            color="primary"
+            page={page}
+          />
+        </Box>
+      </Grid>
 
       <main className={styles.boardId}>
-      
         <List>
           {comments.map((item, key) => {
             console.log(key);
             return (
               <ListItem divider alignItems="flex-start">
-                <ListItemAvatar >
-                <Avatar
-                src = {commentUsers[key].image}
-                alt = {"icon"}
-                />
+                <ListItemAvatar>
+                  <Avatar src={commentUsers[key].image} alt={"icon"} />
                 </ListItemAvatar>
 
                 <ListItemText
-                primary = {"1. "+commentUsers[key].name + " ID:" + item.userId} 
-                secondary={item.comment} />
+                  primary={
+                    "1. " + commentUsers[key].name + " ID:" + item.userId
+                  }
+                  secondary={item.comment}
+                />
                 <IconButton>
-                {status === "authenticated" && isfavorite(item.id, session.user.id) === true?
-                 <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>   :
-                 <FavoriteBorderIcon onClick = {() => postfavorite(item.id)}/> 
-                }
-                
+                  {status === "authenticated" &&
+                  isfavorite(item.id, session.user.id) === true ? (
+                    <FavoriteIcon onClick={() => deletefavorite(item.id)} />
+                  ) : (
+                    <FavoriteBorderIcon onClick={() => postfavorite(item.id)} />
+                  )}
                 </IconButton>
-              {favCnt.get(String(item.id)) === undefined?0:favCnt.get(String(item.id))}
+                {favCnt.get(String(item.id)) === undefined
+                  ? 0
+                  : favCnt.get(String(item.id))}
                 {/*<Button onClick={() => setOpenReportModal(true)}>
                   通報
               </Button>*/}
-
               </ListItem>
             );
           })}
@@ -248,53 +262,50 @@ export default function board({ comments, favorites, favoriteCount, commentCount
         )}
 
         <Modal
-        
-        open={openReportModal}
-        onClose={() => setOpenReportModal}
-        aria-labelledby="report modal"
+          open={openReportModal}
+          onClose={() => setOpenReportModal}
+          aria-labelledby="report modal"
         >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-           通報フォーム
-          </Typography>
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              通報フォーム
+            </Typography>
 
-          <form>
-          <TextField
+            <form>
+              <TextField
                 id="standard-select-currency"
                 select
                 label="カテゴリー"
                 helperText="カテゴリーを選択"
                 variant="standard"
                 style={{ width: "30%" }}
-
               >
                 <MenuItem value="aaa">あああ</MenuItem>
                 <MenuItem value="aaa">あああ</MenuItem>
                 <MenuItem value="aaa">あああ</MenuItem>
                 <MenuItem value="aaa">あああ</MenuItem>
               </TextField>
-              </form>
-
-        </Box>
-
+            </form>
+          </Box>
         </Modal>
       </main>
 
-      <Grid container alignItems='center' justifyContent='center' direction="column">
-    <Box
-    component="pagination" 
-    sx = {{
-
-    }} >
-    <Pagination 
-          count={Math.floor((commentCount + take -1) / take)} 
-          onChange={handleChange}
-          shape="rounded" 
-          color="primary"
-          page={page} 
-    />
-    </Box>
-    </Grid>
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+      >
+        <Box component="pagination" sx={{}}>
+          <Pagination
+            count={Math.floor((commentCount + take - 1) / take)}
+            onChange={handleChange}
+            shape="rounded"
+            color="primary"
+            page={page}
+          />
+        </Box>
+      </Grid>
     </>
   );
 }
@@ -305,12 +316,15 @@ export async function getServerSideProps(context) {
 
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
-  const session = await unstable_getServerSession(context.req, context.res, authOptions);
-  
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
   //commentテーブルからあるboardIdのレコード抽出
   //const comments = await getComments(boardId, take, (page-1)*take);
   //const commentCount = await getCommentCount();
-
 
   //favoriteテーブルからあるboardIdのレコードを抽出
   //const favorites = await getfavorites(boardId,session);
@@ -321,34 +335,52 @@ export async function getServerSideProps(context) {
   //概要を作成
   //const description = await getDes
 
-  const [comments, commentCount, favorites, fav, commentUserIds, board, boardUser] = await Promise.all(
-    [
-    getComments(boardId, take, (page-1)*take),
+  const [
+    comments,
+    commentCount,
+    favorites,
+    fav,
+    commentUserIds,
+    board,
+    boardUser,
+  ] = await Promise.all([
+    getComments(boardId, take, (page - 1) * take),
     getCommentCount(),
-    getfavorites(boardId,session),
+    getfavorites(boardId, session),
     getfavoriteCount(),
-    getCommentUserId(boardId, take, (page-1)*take),
+    getCommentUserId(boardId, take, (page - 1) * take),
     getBoard(boardId),
-    getUser(session.user.id)
-  ]
-  );
+    getUser(session.user.id),
+  ]);
 
-  const commentUsers = await Promise.all(commentUserIds.map(element => getUser(element.userId)));
+  const commentUsers = await Promise.all(
+    commentUserIds.map((element) => getUser(element.userId))
+  );
   //promise.allで高速化可能
 
   //???
   const favoriteCount = new Map();
-  for(const element of fav) {
+  for (const element of fav) {
     favoriteCount.set(String(element.commentid), String(element.count));
   }
   console.log("lieks");
   console.log(commentUsers);
   console.log(comments);
   console.log(favoriteCount);
-  console.log(session.user.id)
+  console.log(session.user.id);
   console.log(favorites);
 
   return {
-    props: { comments, favorites, favoriteCount, commentCount, take, page, commentUsers, board, boardUser } // will be passed to the page component as props
+    props: {
+      comments,
+      favorites,
+      favoriteCount,
+      commentCount,
+      take,
+      page,
+      commentUsers,
+      board,
+      boardUser,
+    }, // will be passed to the page component as props
   };
 }

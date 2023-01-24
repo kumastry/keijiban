@@ -8,15 +8,15 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from 'next/navigation';
-import Snackbar from '@mui/material/Snackbar';
+import { useRouter } from "next/navigation";
+import Snackbar from "@mui/material/Snackbar";
 import { useState } from "react";
 
 export default function post_keijiban() {
   const { data: session, status } = useSession();
   const { register, handleSubmit } = useForm();
   const [open, setOpen] = useState(true);
-  
+
   const router = useRouter();
 
   console.log(session);
@@ -36,9 +36,8 @@ export default function post_keijiban() {
       description,
       userId: session.user.id,
     });
-    
+
     router.push("..");
-    
   };
   return (
     <>
@@ -90,10 +89,10 @@ export default function post_keijiban() {
         </Box>
 
         <Snackbar
-        open={!open}
-        autoHideDuration={6000}
-        message="掲示板を投稿しました"
-      />
+          open={!open}
+          autoHideDuration={6000}
+          message="掲示板を投稿しました"
+        />
       </main>
     </>
   );

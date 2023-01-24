@@ -26,9 +26,9 @@ export default async function handler(req, res) {
     } else if (req.method === "GET") {
       const boardId = +req.query.id;
       const comments = await prisma.comment.findMany({
-        where:{
-          boardId
-        }
+        where: {
+          boardId,
+        },
       });
       res.json(comments);
     }

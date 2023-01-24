@@ -1,4 +1,4 @@
-const { flattenOptionGroups } = require('@mui/base');
+const { flattenOptionGroups } = require("@mui/base");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -15,12 +15,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/about', // リダイレクト元のURL
-        destination: '/redirect_page_url', // リダイレクト先のURL
+        source: "/about", // リダイレクト元のURL
+        destination: "/redirect_page_url", // リダイレクト先のURL
         permanent: false, // 永続的なリダイレクトかのフラグ
       },
-    ]
-  }
+    ];
+  },
 };
 
 module.exports = nextConfig;

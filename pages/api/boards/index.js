@@ -8,9 +8,7 @@ import { getToken } from "next-auth/jwt";
 
 export async function getBoards(take, skip) {
   const prisma = new PrismaClient();
-  const boards = await prisma.board.findMany(
-    {take, skip}
-  );
+  const boards = await prisma.board.findMany({ take, skip });
   //console.log(boards);
   return boards;
 }
@@ -18,10 +16,10 @@ export async function getBoards(take, skip) {
 export async function getBoardCount() {
   const prisma = new PrismaClient();
   const count = await prisma.board.count();
-  console.log("IFDFDFIDIFOIDIFO")
+  console.log("IFDFDFIDIFOIDIFO");
   console.log(count);
 
-  if(count) {
+  if (count) {
     return count;
   }
 }
