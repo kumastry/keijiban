@@ -43,6 +43,8 @@ import { MenuItem } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Grid";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
+import { Fragment } from "react";
+import Stack from "@mui/system/Stack";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -215,11 +217,29 @@ export default function board({
                 </ListItemAvatar>
 
                 <ListItemText
-                  primary={
-                    "1. " + commentUsers[key].name + " ID:" + item.userId
+                  primary=
+                  {
+                 
+                      <Typography
+                        sx={{ display: 'inline' }}
+                        variant="subtitle2"
+                        color="text.secondary"
+                      >
+                        {commentUsers[key].name + " ID:" + item.userId}
+                      </Typography>
                   }
-                  secondary={item.comment}
+                  secondary={
+               
+                    <Typography
+                      
+                      variant="body1"
+                      color="text.primary"
+                    >
+                      {item.comment}
+                    </Typography>
+                  }
                 />
+                <Stack  alignItems="center" gap={0}>
                 <IconButton>
                   {status === "authenticated" &&
                   isfavorite(item.id, session.user.id) === true ? (
@@ -231,6 +251,8 @@ export default function board({
                 {favCnt.get(String(item.id)) === undefined
                   ? 0
                   : favCnt.get(String(item.id))}
+                  </Stack>
+
                 {/*<Button onClick={() => setOpenReportModal(true)}>
                   通報
               </Button>*/}
