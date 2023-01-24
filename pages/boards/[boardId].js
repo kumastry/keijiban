@@ -33,6 +33,8 @@ import  Modal from "@mui/material/Modal";
 import Box from '@mui/material/Box';
 import { MenuItem } from "@mui/material";
 import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -173,29 +175,39 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
   return (
     <>
-      <main className={styles.main}>
-        
-      <Pagination 
+        <Grid container alignItems='center' justifyContent='center' direction="column">
+    <Box
+    component="pagination" 
+    sx = {{
+
+    }} >
+    <Pagination 
           count={Math.floor((commentCount + take -1) / take)} 
           onChange={handleChange}
           shape="rounded" 
           color="primary"
           page={page} 
-      />
+    />
+    </Box>
+    </Grid>
 
-
-
+      <main className={styles.boardId}>
+      
         <List>
           {comments.map((item, key) => {
             console.log(key);
             return (
-              <ListItem divider>
+              <ListItem divider alignItems="flex-start">
+                <ListItemAvatar >
                 <Avatar
                 src = {commentUsers[key].image}
                 alt = {"icon"}
                 />
-                <p>{commentUsers[key].name}</p>
-                <ListItemText primary={item.comment} />
+                </ListItemAvatar>
+
+                <ListItemText
+                primary = {"1. "+commentUsers[key].name + " ID:" + item.userId} 
+                secondary={item.comment} />
                 <IconButton>
                 {status === "authenticated" && isfavorite(item.id, session.user.id) === true?
                  <FavoriteIcon onClick = {() => deletefavorite(item.id)}/>   :
@@ -234,15 +246,6 @@ export default function board({ comments, favorites, favoriteCount, commentCount
             </Button>
           </form>
         )}
-        
-        
-        <Pagination 
-          count={Math.floor((commentCount + take -1) / take)} 
-          onChange={handleChange}
-          shape="rounded" 
-          color="primary"
-          page={page} 
-          />
 
         <Modal
         
@@ -276,6 +279,22 @@ export default function board({ comments, favorites, favoriteCount, commentCount
 
         </Modal>
       </main>
+
+      <Grid container alignItems='center' justifyContent='center' direction="column">
+    <Box
+    component="pagination" 
+    sx = {{
+
+    }} >
+    <Pagination 
+          count={Math.floor((commentCount + take -1) / take)} 
+          onChange={handleChange}
+          shape="rounded" 
+          color="primary"
+          page={page} 
+    />
+    </Box>
+    </Grid>
     </>
   );
 }

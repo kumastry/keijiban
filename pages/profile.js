@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 export default function profile() {
   const { data: session, status } = useSession();
   return (
-    <>
+    <main>
       {status === "authenticated" ? (
         <div>
           <p>{session.user.name}</p>
@@ -14,6 +14,6 @@ export default function profile() {
       ) : (
         <p>nasi</p>
       )}
-    </>
+    </main>
   );
 }
