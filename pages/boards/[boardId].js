@@ -70,6 +70,7 @@ export default function board({
   take,
   page,
   commentUsers,
+  board
 }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
@@ -102,14 +103,16 @@ export default function board({
     return st;
   });*/
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(session);
     console.log(boardId);
-    axios.post("../../api/boards/[boardId]/comments", {
+    await axios.post("../../api/boards/[boardId]/comments", {
       comment: data.comment,
       userId: session.user.id,
       boardId,
     });
+
+    router.reload();
   };
 
   const postfavorite = (commentId) => {
@@ -208,6 +211,14 @@ export default function board({
       </Grid>
 
       <main className={styles.boardId}>
+        
+        <header style = {{margin: 10}}>
+          <h1>{board.title}</h1>
+        </header>
+
+        <article style = {{margin: 10}}>
+          <p>{board.description}</p>
+        </article>
         <List>
           {comments.map((item, key) => {
             console.log(key);
