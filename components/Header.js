@@ -17,7 +17,7 @@ export default function Header() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography sx={{ flexGrow: 1 }}>
             <Button color="inherit">
               <Link href="/">kumastry keijiban</Link>
             </Button>

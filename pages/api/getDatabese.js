@@ -1,5 +1,16 @@
 import prisma from "../../lib/prismadb";
 
+/*export const getCommentCountByBoardId = async boardId => {
+  const commentCount = await prisma.comment.findMany({
+    include:{
+      _count:{
+      }
+    }
+  });
+
+  return commentCount;
+}*/
+
 export const getCommentCount = async () => {
   const comment = await prisma.comment.count();
   return comment;

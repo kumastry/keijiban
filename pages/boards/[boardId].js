@@ -275,23 +275,27 @@ export default function board({
 
         {status === "unauthenticated" || (
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
+            <Box sx = {{m:2}}>
             <TextField
               fullWidth
               id="comment-form"
               label="コメントを投稿"
               multiline
-              rows={4}
+              rows={6}
               {...register("comment")}
             />
-
+            
             <Button
               type="submit "
               color="primary"
               variant="contained"
               size="large"
+              fullWidth
+              sx = {{mt:1}}
             >
               投稿
             </Button>
+            </Box>
           </form>
         )}
 
@@ -330,7 +334,7 @@ export default function board({
         justifyContent="center"
         direction="column"
       >
-        <Box component="pagination" sx={{}}>
+        <Box component="pagination" sx={{m:2}}>
           <Pagination
             count={Math.floor((commentCount + take - 1) / take)}
             onChange={handleChange}

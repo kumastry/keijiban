@@ -21,6 +21,7 @@ import Pagination from "@mui/material/Pagination";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Grid, Box } from "@mui/material";
+//import { getCommentCountByBoardId } from "./api/getDatabese";
 
 export default function Home({ boards, boardCount, take, page }) {
   const { data: session, status } = useSession();
@@ -65,20 +66,20 @@ export default function Home({ boards, boardCount, take, page }) {
             return (
               <Card >
                 <CardContent>
-                  <Typography variant="h5" component="div">
-                    {board.id},{board.title}
+                  <Typography variant="h5">
+                    {board.id}.{board.title}
                   </Typography>
 
                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     {board.category}
                   </Typography>
 
-                  <Typography variant="body2">{board.description}</Typography>
+                  <Typography variant="body1">{board.description}</Typography>
                 </CardContent>
 
-                <CardActions>
+                <CardActions sx = {{  display: "flex", justifyContent: "flex-end", margin:1}}>
                   <Link href={`/boards/${board.id}`}>
-                    <Button size="small">掲示板を見る</Button>
+                    <Button size="large">掲示板を見る</Button>
                   </Link>
                 </CardActions>
               </Card>
@@ -128,10 +129,13 @@ export default function Home({ boards, boardCount, take, page }) {
 export async function getServerSideProps({ params, query }) {
   const page = +query.page || 1;
   const take = 5;
+  console.log(params);
+  //const boardId = +params.boardId;
   console.log("query", query);
   console.log(page);
   const boards = await getBoards(take, (page - 1) * take);
   const boardCount = await getBoardCount();
+  //const commentCount = await getCommentCount(boardId);
   console.log(boards);
   console.log(boardCount);
   console.log("serversidepros");
