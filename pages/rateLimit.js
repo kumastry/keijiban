@@ -1,3 +1,4 @@
+/*
 import { NextResponse } from "next/server";
 import LRU from "lru-cache";
 
@@ -29,3 +30,4 @@ export default function rateLimit(options) {
       }),
   };
 }
+*/
