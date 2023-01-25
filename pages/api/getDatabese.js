@@ -47,6 +47,8 @@ export const getComments = async (boardId, take, skip) => {
     take,
     skip,
   });
+
+  
   return comments;
 };
 

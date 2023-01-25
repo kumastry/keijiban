@@ -8,7 +8,13 @@ import { getToken } from "next-auth/jwt";
 
 export async function getBoards(take, skip) {
   const prisma = new PrismaClient();
-  const boards = await prisma.board.findMany({ take, skip });
+  const boards = await prisma.board.findMany({
+    orderBy:[
+      {
+        createdAt:"desc"
+      }
+    ] ,
+    take, skip });
   //console.log(boards);
   return boards;
 }

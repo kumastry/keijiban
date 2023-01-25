@@ -45,6 +45,7 @@ import Grid from "@mui/material/Grid";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { Fragment } from "react";
 import Stack from "@mui/system/Stack";
+import dayjs from "dayjs";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -225,7 +226,7 @@ export default function board({
                         variant="subtitle2"
                         color="text.secondary"
                       >
-                        {commentUsers[key].name + " ID:" + item.userId}
+                        {(key +1)+". " + commentUsers[key].name + " ID:" + item.userId + " "}
                       </Typography>
                   }
                   secondary={

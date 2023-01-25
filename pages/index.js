@@ -59,10 +59,11 @@ export default function Home({ boards, boardCount, take, page }) {
       </Grid>
 
       <main className={styles.main}>
+        <Box sx={{ minWidth: "70%", maxWidth: "70%", margin: 5 }} >
         <Stack spacing={2}>
           {boards.map((board, key) => {
             return (
-              <Card sx={{ minWidth: 100, maxWidth: 345 }}>
+              <Card >
                 <CardContent>
                   <Typography variant="h5" component="div">
                     {board.id},{board.title}
@@ -84,13 +85,25 @@ export default function Home({ boards, boardCount, take, page }) {
             );
           })}
 
-          <Link href={"/post_keijiban"}>
-            <Fab variant="extended" color="primary" aria-label="add">
-              掲示板作成
-            </Fab>
-          </Link>
+          
+
+          
         </Stack>
+        </Box>
       </main>
+
+      <Fab variant="extended" color="primary" aria-label="add" sx = {{
+    margin: 5,
+    top: 'auto',
+    right: 0,
+    bottom: 0,
+    left: 'auto',
+    position: 'fixed',
+}}>
+            <Link href={"/post_keijiban"}>
+              掲示板作成
+            </Link>
+            </Fab>
 
       <Grid
         container
