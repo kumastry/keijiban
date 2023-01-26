@@ -4,7 +4,7 @@ import {
   getComments,
   getCommentCount,
   getCommentUserId,
-  getUser,
+  getUserByUserId,
   getBoard,
   getfavorites,
   getfavoriteCount,
@@ -251,19 +251,25 @@ export default function board({
                     </Typography>
                   }
                 />
+                 {status !== "authenticated" ||
                 <Stack  alignItems="center" gap={0}>
+                 
                 <IconButton>
-                  {status === "authenticated" &&
+                  {
                   isfavorite(item.id, session.user.id) === true ? (
                     <FavoriteIcon onClick={() => deletefavorite(item.id)} />
                   ) : (
                     <FavoriteBorderIcon onClick={() => postfavorite(item.id)} />
                   )}
                 </IconButton>
+          
+                
                 {favCnt.get(String(item.id)) === undefined
                   ? 0
-                  : favCnt.get(String(item.id))}
-                  </Stack>
+                  : favCnt.get(String(item.id))
+                  }
+                </Stack>
+                }
 
                 {/*<Button onClick={() => setOpenReportModal(true)}>
                   通報
@@ -360,6 +366,10 @@ export async function getServerSideProps(context) {
     authOptions
   );
 
+  console.log("sesson",session);
+
+  const userId = session !== null?session.user.id:undefined;
+
   //commentテーブルからあるboardIdのレコード抽出
   //const comments = await getComments(boardId, take, (page-1)*take);
   //const commentCount = await getCommentCount();
@@ -380,19 +390,19 @@ export async function getServerSideProps(context) {
     fav,
     commentUserIds,
     board,
-    boardUser,
+    //boardUser,
   ] = await Promise.all([
     getComments(boardId, take, (page - 1) * take),
     getCommentCount(),
-    getfavorites(boardId, session),
+    getfavorites(boardId, userId),
     getfavoriteCount(),
     getCommentUserId(boardId, take, (page - 1) * take),
     getBoard(boardId),
-    getUser(session.user.id),
+    //getUserByUserId(userId),
   ]);
 
   const commentUsers = await Promise.all(
-    commentUserIds.map((element) => getUser(element.userId))
+    commentUserIds.map(element => getUserByUserId(element.userId))
   );
   //promise.allで高速化可能
 
@@ -401,12 +411,12 @@ export async function getServerSideProps(context) {
   for (const element of fav) {
     favoriteCount.set(String(element.commentid), String(element.count));
   }
-  console.log("lieks");
-  console.log(commentUsers);
-  console.log(comments);
-  console.log(favoriteCount);
-  console.log(session.user.id);
-  console.log(favorites);
+  //console.log("lieks");
+  //console.log(commentUsers);
+  //console.log(comments);
+  //console.log(favoriteCount);
+  //console.log(session.user.id);
+  //console.log(favorites);
 
   return {
     props: {
@@ -418,7 +428,7 @@ export async function getServerSideProps(context) {
       page,
       commentUsers,
       board,
-      boardUser,
+      //boardUser,
     }, // will be passed to the page component as props
   };
 }

@@ -26,7 +26,7 @@ export const getBoard = async (boardId) => {
   return board;
 };
 
-export const getUser = async (userId) => {
+export const getUserByUserId = async (userId) => {
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -63,11 +63,15 @@ export const getComments = async (boardId, take, skip) => {
   return comments;
 };
 
-export const getfavorites = async (boardId, session) => {
-  console.log("bad", session.user.id);
+export const getfavorites = async (boardId, userId) => {
+  //console.log("bad", session.user.id);
+  if(!userId) {
+    return [];
+  }
+
   const result = await prisma.favorite.findMany({
     where: {
-      AND: [{ boardId }, { userId: session.user.id }],
+      AND: [{ boardId }, { userId}],
     },
   });
   console.log(result);
