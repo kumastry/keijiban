@@ -88,6 +88,7 @@ export default function board({
   const [favState, setFavState] = useState(favorites);
   const [openReportModal, setOpenReportModal] = useState(false);
   const { boardId } = router.query;
+  const commentLimit = 500;
   /*
   console.log(router);
   console.log(commentUsers);
@@ -234,6 +235,7 @@ export default function board({
       </Grid>
 
       <main className={styles.boardId}>
+        {commentCount < commentLimit || <h3 style={{color:"red", margin:5}}>※コメント数が上限に達しました</h3>}
         <header style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="h4">
             {board.title}
@@ -308,7 +310,7 @@ export default function board({
           })}
         </List>
 
-        {status === "unauthenticated" || (
+        {status === "unauthenticated" || commentCount >= commentLimit || (
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ m: 2 }}>
               {/*<TextField
