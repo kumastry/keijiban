@@ -7,7 +7,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from "react";
-export default function profile() {
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
+import {getBoardCountByUserId, getCommentCountByUserId, getFavoriteCountByUserId} from './api/getDatabese';
+
+export default function profile({boardCountByUserId, commentCountByUserId, favoriteCountByUserId}) {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   
@@ -23,14 +27,17 @@ export default function profile() {
     <main>
       {status === "authenticated" ? (
         <div>
-          <p>{session.user.name}</p>
-          <p>{session.user.email}</p>
           <Image
             src={session.user.image}
             alt="Picture of the author"
             width={50}
             height={50}
           />
+          <p>ユーザー名:{session.user.name}</p>
+          <p>ID:{session.user.id}</p>
+          <p>掲示板投稿数:{boardCountByUserId}</p>
+          <p>コメント投稿数:{commentCountByUserId}</p>
+          <p>いいね数:{favoriteCountByUserId}</p>
           <Box>
             <Button
               variant="contained"
@@ -59,8 +66,27 @@ export default function profile() {
       </Dialog>
         </div>
       ) : (
-        <p>nasi</p>
+        <p>サインインしな</p>
       )}
     </main>
   );
+}
+
+export async function getServerSideProps(context) {
+ //userIdのユーザーの掲示板投稿数，コメント投稿数，いいね数を表示する
+ const session = await unstable_getServerSession(
+  context.req,
+  context.res,
+  authOptions
+);
+
+const userId = session.user.id || "";
+
+const [boardCountByUserId, commentCountByUserId, favoriteCountByUserId] = await Promise.all([
+  getBoardCountByUserId(userId), getCommentCountByUserId(userId), getFavoriteCountByUserId(userId)
+]);
+
+  return {
+    props: {boardCountByUserId, commentCountByUserId, favoriteCountByUserId}, // will be passed to the page component as props
+  };
 }

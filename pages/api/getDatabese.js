@@ -11,6 +11,38 @@ import prisma from "../../lib/prismadb";
   return commentCount;
 }*/
 
+export const getBoardCountByUserId = async (userId) => {
+  const boardCount = await prisma.board.count({
+    where:{
+      userId
+    }
+  });
+
+  return boardCount;
+}
+
+export const getCommentCountByUserId = async (userId) => {
+  const commentCount = await prisma.comment.count({
+    where:{
+      userId
+    }
+  });
+
+  return commentCount;
+
+}
+  
+export const getFavoriteCountByUserId = async (userId) => {
+  const favriteCount = await prisma.favorite.count({
+    where:{
+      userId
+    }
+  });
+
+  return favriteCount;
+
+}
+
 export const getCommentCount = async () => {
   const comment = await prisma.comment.count();
   return comment;
