@@ -55,6 +55,7 @@ export default function post_keijiban() {
 
               <TextField
                 id="standard-select-currency"
+                required
                 select
                 label="カテゴリー"
                 helperText="カテゴリーを選択"
@@ -62,15 +63,18 @@ export default function post_keijiban() {
                 style={{ width: "30%" }}
                 {...register("category")}
               >
-                <MenuItem value="aaa">あああ</MenuItem>
-                <MenuItem value="aaa">あああ</MenuItem>
-                <MenuItem value="aaa">あああ</MenuItem>
-                <MenuItem value="aaa">あああ</MenuItem>
+                <MenuItem value="ニュース">ニュース</MenuItem>
+                <MenuItem value="日常">日常</MenuItem>
+                <MenuItem value="学習">学習</MenuItem>
+                <MenuItem value="相談">相談</MenuItem>
+                <MenuItem value="ペット">ペット</MenuItem>
+                <MenuItem value="その他">その他</MenuItem>
               </TextField>
 
               <TextField
                 id="outlined-multiline-static"
                 label="掲示板の概要"
+                required
                 multiline
                 fullWidth
                 rows={6}

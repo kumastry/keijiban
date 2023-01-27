@@ -8,21 +8,24 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export const authOptions = {
   // Configure one or more authentication providers
+  // Google, Github, Twitter,メール認証を加える
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+      
     }),
-    // ...add more providers here
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+      
+    })
   ],
   theme: {
     colorScheme: "light",
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      return true;
-    },
     async session({ session, token, user }) {
       session.user.id = user.id;
       return session;

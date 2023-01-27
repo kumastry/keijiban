@@ -23,6 +23,10 @@ import { useRouter } from "next/router";
 import { Grid, Box } from "@mui/material";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
+const newLineStyle = {
+  whiteSpace: "pre-wrap", wordWrap: "break-word"
+}
+
 export default function Home({ boards, boardCount, take, page }) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -41,6 +45,7 @@ export default function Home({ boards, boardCount, take, page }) {
         <title>kumastry keijiban</title>
         <meta name="description" content="本格的な掲示板　ただそれだけ" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -68,15 +73,15 @@ export default function Home({ boards, boardCount, take, page }) {
             return (
               <Card >
                 <CardContent>
-                  <Typography variant="h5">
-                    {board.id}.{board.title}
+                  <Typography variant="h5" sx = {newLineStyle}>
+                    {key+1}.{board.title}
                   </Typography>
 
                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     {board.category}
                   </Typography>
 
-                  <Typography variant="body1">{board.description}</Typography>
+                  <Typography variant="body1" sx = {newLineStyle}>{board.description}</Typography>
                 </CardContent>
 
                 <CardActions sx = {{  display: "flex", justifyContent: "flex-end", margin:1}}>

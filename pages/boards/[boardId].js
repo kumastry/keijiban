@@ -62,6 +62,12 @@ const style = {
   p: 4,
 };
 
+const newLineStyle = {
+  whiteSpace: "pre-wrap", wordWrap: "break-word"
+}
+
+
+
 export default function board({
   comments,
   favorites,
@@ -213,11 +219,11 @@ export default function board({
       <main className={styles.boardId}>
         
         <header style = {{margin: 10}}>
-          <h1>{board.title}</h1>
+          <h1 style={newLineStyle}>{board.title}</h1>
         </header>
 
         <article style = {{margin: 10}}>
-          <p>{board.description}</p>
+          <p style={newLineStyle}>{board.description}</p>
         </article>
         <List>
           {comments.map((item, key) => {
@@ -243,7 +249,7 @@ export default function board({
                   secondary={
                
                     <Typography
-                      
+                      sx = {newLineStyle}
                       variant="body1"
                       color="text.primary"
                     >
