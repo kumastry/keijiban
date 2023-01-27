@@ -16,6 +16,16 @@ export const getCommentCount = async () => {
   return comment;
 };
 
+export const getCommentCountByBoardId = async (boardId) => {
+  const commentCount = await prisma.comment.count({
+    where:{
+      boardId
+    }
+  });
+
+  return commentCount;
+}
+
 export const getBoard = async (boardId) => {
   const board = await prisma.board.findUnique({
     where: {

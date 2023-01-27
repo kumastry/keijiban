@@ -8,6 +8,7 @@ import {
   getBoard,
   getfavorites,
   getfavoriteCount,
+  getCommentCountByBoardId
 } from "../api/getDatabese";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -87,9 +88,14 @@ export default function board({
   const [favState, setFavState] = useState(favorites);
   const [openReportModal, setOpenReportModal] = useState(false);
   const { boardId } = router.query;
+  /*
   console.log(router);
   console.log(commentUsers);
-
+  console.log("UEUEEU")
+  console.log(take);
+  console.log(commentCount);
+  console.log(Math.floor((commentCount + take - 1) / commentCount));
+  */
   const validationRules = {
     comment: {
       required: "コメントを入力してください。",
@@ -400,7 +406,7 @@ export default function board({
 
 export async function getServerSideProps(context) {
   const page = +context.query.page || 1;
-  const take = 50;
+  const take = 3;
 
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
@@ -437,7 +443,7 @@ export async function getServerSideProps(context) {
     //boardUser,
   ] = await Promise.all([
     getComments(boardId, take, (page - 1) * take),
-    getCommentCount(),
+    getCommentCountByBoardId(boardId),
     getfavorites(boardId, userId),
     getfavoriteCount(),
     getCommentUserId(boardId, take, (page - 1) * take),
