@@ -21,6 +21,7 @@ import Pagination from "@mui/material/Pagination";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Grid, Box } from "@mui/material";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
 const newLineStyle = {
@@ -105,6 +106,7 @@ export default function Home({ boards, boardCount, take, page }) {
         </Box>
       </main>
       {status !== "authenticated" || (
+        <Link href={"/post_keijiban"}>
         <Fab
           variant="extended"
           color="primary"
@@ -118,8 +120,13 @@ export default function Home({ boards, boardCount, take, page }) {
             position: "fixed",
           }}
         >
-          <Link href={"/post_keijiban"}>掲示板作成</Link>
+          <PostAddIcon/>
+          
+            
+            掲示板作成
+          
         </Fab>
+        </Link>
       )}
       <Grid
         container
