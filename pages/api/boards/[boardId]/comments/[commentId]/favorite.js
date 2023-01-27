@@ -19,6 +19,7 @@ export default async function handler(req, res) {
   //const clientIp = requestIp.getClientIp(req) || "IP_NOT_FOUND";
   //console.log(clientIp);
   //commentIdとuserIdが必要
+  if(session) {
   if (req.method === "POST") {
     console.log("post");
     try {
@@ -85,4 +86,5 @@ export default async function handler(req, res) {
       console.error(e);
     }
   }
+}
 }

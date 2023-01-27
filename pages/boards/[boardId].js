@@ -79,7 +79,7 @@ export default function board({
   board,
 }) {
   const { control, handleSubmit } = useForm({
-    defaultValues: { comment: '' }
+    defaultValues: { comment: "" },
   });
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -91,12 +91,12 @@ export default function board({
   console.log(commentUsers);
 
   const validationRules = {
-    comment:{
-      required: 'コメントを入力してください。',
-      maxLength: { value: 600, message: '600文字以下で入力してください。' },
-      minLength: { value:0 ,message:'コメントを入力してください'}
-    }
-  }
+    comment: {
+      required: "コメントを入力してください。",
+      maxLength: { value: 600, message: "600文字以下で入力してください。" },
+      minLength: { value: 0, message: "コメントを入力してください" },
+    },
+  };
 
   const handleChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
@@ -122,7 +122,7 @@ export default function board({
   const onSubmit = async (data) => {
     console.log(session);
     console.log(boardId);
-    console.log(data); 
+    console.log(data);
     await axios.post("../../api/boards/[boardId]/comments", {
       comment: data.comment,
       userId: session.user.id,
@@ -130,7 +130,6 @@ export default function board({
     });
 
     router.reload();
-    
   };
 
   const postfavorite = (commentId) => {
@@ -288,9 +287,9 @@ export default function board({
                     </IconButton>
 
                     <Typography color="text.primary">
-                    {favCnt.get(String(item.id)) === undefined
-                      ? 0
-                      : favCnt.get(String(item.id))}
+                      {favCnt.get(String(item.id)) === undefined
+                        ? 0
+                        : favCnt.get(String(item.id))}
                     </Typography>
                   </Stack>
                 )}
@@ -315,26 +314,25 @@ export default function board({
                 rows={6}
                 {...register("comment")}
         />*/}
-              
-            <Controller
-              name = "comment"
-              control={control}
-              rules={validationRules.comment} 
-              render = {({field, fieldState}) => (
-                <TextField
-                {...field}
-                required
-                fullWidth
-                id="commentForm"
-                label="コメントを投稿"
-                multiline
-                rows={6}
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-              />
-              )}
-              />
 
+              <Controller
+                name="comment"
+                control={control}
+                rules={validationRules.comment}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    required
+                    fullWidth
+                    id="commentForm"
+                    label="コメントを投稿"
+                    multiline
+                    rows={6}
+                    error={fieldState.invalid}
+                    helperText={fieldState.error?.message}
+                  />
+                )}
+              />
 
               <Button
                 type="submit "
