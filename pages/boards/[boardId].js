@@ -275,9 +275,11 @@ export default function board({
                       )}
                     </IconButton>
 
+                    <Typography color="text.primary">
                     {favCnt.get(String(item.id)) === undefined
                       ? 0
                       : favCnt.get(String(item.id))}
+                    </Typography>
                   </Stack>
                 )}
 
@@ -294,6 +296,7 @@ export default function board({
             <Box sx={{ m: 2 }}>
               <TextField
                 fullWidth
+                required
                 id="comment-form"
                 label="コメントを投稿"
                 multiline
