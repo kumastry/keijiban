@@ -137,7 +137,12 @@ export default function board({
     });
     //ページ切り替えのときページ内リンクに飛ぶ
     //router.replace(`/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
-    history.pushState(null, null, `/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
+    /* 近日実装
+    if(commentCount < take) {
+      history.pushState(null, null, `/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
+    } else {
+      history.pushState(null, null, `/boards/${boardId}?page=${page+1}#comment.${page*take +1}`);
+    }*/
     router.reload();
   };
 
