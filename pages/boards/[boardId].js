@@ -390,7 +390,7 @@ export default function board({
         justifyContent="center"
         direction="column"
       >
-        <Box component="pagination" sx={{ m: 2 }}>
+        <Box sx={{ m: 2 }}>
           <Pagination
             count={Math.floor((commentCount + take - 1) / take)}
             onChange={handleChange}
@@ -406,7 +406,7 @@ export default function board({
 
 export async function getServerSideProps(context) {
   const page = +context.query.page || 1;
-  const take = 3;
+  const take = 50;
 
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
