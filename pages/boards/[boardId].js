@@ -261,8 +261,8 @@ export default function board({
                       variant="subtitle2"
                       color="text.secondary"
                     >
-                      {key +
-                        1 +
+                      {(key + 1)+(page-1)*take
+                       +
                         ". " +
                         commentUsers[key].name +
                         " ID:" +

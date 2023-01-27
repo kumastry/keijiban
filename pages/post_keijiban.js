@@ -103,7 +103,7 @@ export default function post_keijiban() {
                     label="カテゴリー"
                     helperText={fieldState.error?.message}
                     variant="standard"
-                    style={{ width: "40%" }}
+                    style={{ width: "35%" }}
                     error={fieldState.invalid}
                   >
                     <MenuItem value="ニュース">ニュース</MenuItem>

@@ -76,7 +76,7 @@ export default function Home({ boards, boardCount, take, page }) {
                 <Card>
                   <CardContent>
                     <Typography variant="h5" sx={newLineStyle}>
-                      {key + 1}.{board.title}
+                      {key + 1 + (page-1)*take}.{board.title}
                     </Typography>
 
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
