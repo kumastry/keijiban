@@ -46,6 +46,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { Fragment } from "react";
 import Stack from "@mui/system/Stack";
 import dayjs from "dayjs";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -63,10 +64,9 @@ const style = {
 };
 
 const newLineStyle = {
-  whiteSpace: "pre-wrap", wordWrap: "break-word"
-}
-
-
+  whiteSpace: "pre-wrap",
+  wordWrap: "break-word",
+};
 
 export default function board({
   comments,
@@ -76,7 +76,7 @@ export default function board({
   take,
   page,
   commentUsers,
-  board
+  board,
 }) {
   const { register, handleSubmit } = useForm();
   const { data: session, status } = useSession();
@@ -217,13 +217,16 @@ export default function board({
       </Grid>
 
       <main className={styles.boardId}>
-        
-        <header style = {{margin: 10}}>
-          <h1 style={newLineStyle}>{board.title}</h1>
+        <header style={{ margin: 10 }}>
+          <Typography color="text.primary" sx={newLineStyle} variant="h4">
+            {board.title}
+          </Typography>
         </header>
 
-        <article style = {{margin: 10}}>
-          <p style={newLineStyle}>{board.description}</p>
+        <article style={{ margin: 10 }}>
+          <Typography color="text.primary" sx={newLineStyle} variant="body1">
+            {board.description}
+          </Typography>
         </article>
         <List>
           {comments.map((item, key) => {
@@ -235,21 +238,24 @@ export default function board({
                 </ListItemAvatar>
 
                 <ListItemText
-                  primary=
-                  {
-                 
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        variant="subtitle2"
-                        color="text.secondary"
-                      >
-                        {(key +1)+". " + commentUsers[key].name + " ID:" + item.userId + " "}
-                      </Typography>
+                  primary={
+                    <Typography
+                      sx={{ display: "inline" }}
+                      variant="subtitle2"
+                      color="text.secondary"
+                    >
+                      {key +
+                        1 +
+                        ". " +
+                        commentUsers[key].name +
+                        " ID:" +
+                        item.userId +
+                        " "}
+                    </Typography>
                   }
                   secondary={
-               
                     <Typography
-                      sx = {newLineStyle}
+                      sx={newLineStyle}
                       variant="body1"
                       color="text.primary"
                     >
@@ -257,25 +263,23 @@ export default function board({
                     </Typography>
                   }
                 />
-                 {status !== "authenticated" ||
-                <Stack  alignItems="center" gap={0}>
-                 
-                <IconButton>
-                  {
-                  isfavorite(item.id, session.user.id) === true ? (
-                    <FavoriteIcon onClick={() => deletefavorite(item.id)} />
-                  ) : (
-                    <FavoriteBorderIcon onClick={() => postfavorite(item.id)} />
-                  )}
-                </IconButton>
-          
-                
-                {favCnt.get(String(item.id)) === undefined
-                  ? 0
-                  : favCnt.get(String(item.id))
-                  }
-                </Stack>
-                }
+                {status !== "authenticated" || (
+                  <Stack alignItems="center" gap={0}>
+                    <IconButton>
+                      {isfavorite(item.id, session.user.id) === true ? (
+                        <FavoriteIcon onClick={() => deletefavorite(item.id)} />
+                      ) : (
+                        <FavoriteBorderIcon
+                          onClick={() => postfavorite(item.id)}
+                        />
+                      )}
+                    </IconButton>
+
+                    {favCnt.get(String(item.id)) === undefined
+                      ? 0
+                      : favCnt.get(String(item.id))}
+                  </Stack>
+                )}
 
                 {/*<Button onClick={() => setOpenReportModal(true)}>
                   通報
@@ -287,26 +291,27 @@ export default function board({
 
         {status === "unauthenticated" || (
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
-            <Box sx = {{m:2}}>
-            <TextField
-              fullWidth
-              id="comment-form"
-              label="コメントを投稿"
-              multiline
-              rows={6}
-              {...register("comment")}
-            />
-            
-            <Button
-              type="submit "
-              color="primary"
-              variant="contained"
-              size="large"
-              fullWidth
-              sx = {{mt:1}}
-            >
-              投稿
-            </Button>
+            <Box sx={{ m: 2 }}>
+              <TextField
+                fullWidth
+                id="comment-form"
+                label="コメントを投稿"
+                multiline
+                rows={6}
+                {...register("comment")}
+              />
+
+              <Button
+                type="submit "
+                color="primary"
+                variant="contained"
+                size="large"
+                fullWidth
+                sx={{ mt: 1 }}
+                endIcon={<PostAddIcon />}
+              >
+                投稿
+              </Button>
             </Box>
           </form>
         )}
@@ -346,7 +351,7 @@ export default function board({
         justifyContent="center"
         direction="column"
       >
-        <Box component="pagination" sx={{m:2}}>
+        <Box component="pagination" sx={{ m: 2 }}>
           <Pagination
             count={Math.floor((commentCount + take - 1) / take)}
             onChange={handleChange}
@@ -372,9 +377,9 @@ export async function getServerSideProps(context) {
     authOptions
   );
 
-  console.log("sesson",session);
+  console.log("sesson", session);
 
-  const userId = session !== null?session.user.id:undefined;
+  const userId = session !== null ? session.user.id : undefined;
 
   //commentテーブルからあるboardIdのレコード抽出
   //const comments = await getComments(boardId, take, (page-1)*take);
@@ -408,7 +413,7 @@ export async function getServerSideProps(context) {
   ]);
 
   const commentUsers = await Promise.all(
-    commentUserIds.map(element => getUserByUserId(element.userId))
+    commentUserIds.map((element) => getUserByUserId(element.userId))
   );
   //promise.allで高速化可能
 

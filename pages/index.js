@@ -24,8 +24,9 @@ import { Grid, Box } from "@mui/material";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
 const newLineStyle = {
-  whiteSpace: "pre-wrap", wordWrap: "break-word"
-}
+  whiteSpace: "pre-wrap",
+  wordWrap: "break-word",
+};
 
 export default function Home({ boards, boardCount, take, page }) {
   const { data: session, status } = useSession();
@@ -67,56 +68,59 @@ export default function Home({ boards, boardCount, take, page }) {
       </Grid>
 
       <main className={styles.main}>
-        <Box sx={{ minWidth: "70%", maxWidth: "70%", margin: 5 }} >
-        <Stack spacing={2}>
-          {boards.map((board, key) => {
-            return (
-              <Card >
-                <CardContent>
-                  <Typography variant="h5" sx = {newLineStyle}>
-                    {key+1}.{board.title}
-                  </Typography>
+        <Box sx={{ minWidth: "70%", maxWidth: "70%", margin: 5 }}>
+          <Stack spacing={2}>
+            {boards.map((board, key) => {
+              return (
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5" sx={newLineStyle}>
+                      {key + 1}.{board.title}
+                    </Typography>
 
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {board.category}
-                  </Typography>
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                      {board.category}
+                    </Typography>
 
-                  <Typography variant="body1" sx = {newLineStyle}>{board.description}</Typography>
-                </CardContent>
+                    <Typography variant="body1" sx={newLineStyle}>
+                      {board.description}
+                    </Typography>
+                  </CardContent>
 
-                <CardActions sx = {{  display: "flex", justifyContent: "flex-end", margin:1}}>
-                  <Link href={`/boards/${board.id}`}>
-                    <Button size="large">掲示板を見る</Button>
-                  </Link>
-                </CardActions>
-              </Card>
-            );
-          })}
-
-          
-
-          
-        </Stack>
+                  <CardActions
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      margin: 1,
+                    }}
+                  >
+                    <Link href={`/boards/${board.id}`}>
+                      <Button size="large">掲示板を見る</Button>
+                    </Link>
+                  </CardActions>
+                </Card>
+              );
+            })}
+          </Stack>
         </Box>
       </main>
-      {
-    status !== "authenticated" || 
-      <Fab variant="extended" color="primary" aria-label="add" sx = {{
-    margin: 5,
-    top: 'auto',
-    right: 0,
-    bottom: 0,
-    left: 'auto',
-    position: 'fixed',
-}}>
-
- 
-  
-            <Link href={"/post_keijiban"}>
-              掲示板作成
-            </Link>
-            </Fab>
-          } 
+      {status !== "authenticated" || (
+        <Fab
+          variant="extended"
+          color="primary"
+          aria-label="add"
+          sx={{
+            margin: 5,
+            top: "auto",
+            right: 0,
+            bottom: 0,
+            left: "auto",
+            position: "fixed",
+          }}
+        >
+          <Link href={"/post_keijiban"}>掲示板作成</Link>
+        </Fab>
+      )}
       <Grid
         container
         alignItems="center"

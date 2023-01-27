@@ -59,19 +59,18 @@ export const getComments = async (boardId, take, skip) => {
     skip,
   });
 
-  
   return comments;
 };
 
 export const getfavorites = async (boardId, userId) => {
   //console.log("bad", session.user.id);
-  if(!userId) {
+  if (!userId) {
     return [];
   }
 
   const result = await prisma.favorite.findMany({
     where: {
-      AND: [{ boardId }, { userId}],
+      AND: [{ boardId }, { userId }],
     },
   });
   console.log(result);

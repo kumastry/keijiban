@@ -1,8 +1,7 @@
 .layout {
   padding: 2rem;
   min-height: 100vh;
-  background-color:
-  #dcdce2
+  background-color: #dcdce2;
 }
 
 .main {
@@ -10,7 +9,6 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
 }
 
 .boardId {
@@ -18,7 +16,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: left;
-  margin:5
+  margin: 5;
 }
 
 .description {

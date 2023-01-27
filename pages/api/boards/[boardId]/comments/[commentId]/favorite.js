@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         },
       });
       res.json(result);
-    } catch (e){
+    } catch (e) {
       console.error(e);
     }
   } else if (req.method === "GET") {

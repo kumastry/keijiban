@@ -9,12 +9,14 @@ import { getToken } from "next-auth/jwt";
 export async function getBoards(take, skip) {
   const prisma = new PrismaClient();
   const boards = await prisma.board.findMany({
-    orderBy:[
+    orderBy: [
       {
-        createdAt:"desc"
-      }
-    ] ,
-    take, skip });
+        createdAt: "desc",
+      },
+    ],
+    take,
+    skip,
+  });
   //console.log(boards);
   return boards;
 }
