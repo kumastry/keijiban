@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { border } from "@mui/system";
@@ -78,7 +78,9 @@ export default function board({
   commentUsers,
   board,
 }) {
-  const { register, handleSubmit } = useForm();
+  const { control, handleSubmit } = useForm({
+    defaultValues: { comment: '' }
+  });
   const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
@@ -87,6 +89,14 @@ export default function board({
   const { boardId } = router.query;
   console.log(router);
   console.log(commentUsers);
+
+  const validationRules = {
+    comment:{
+      required: 'コメントを入力してください。',
+      maxLength: { value: 600, message: '600文字以下で入力してください。' },
+      minLength: { value:0 ,message:'コメントを入力してください'}
+    }
+  }
 
   const handleChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
@@ -112,6 +122,7 @@ export default function board({
   const onSubmit = async (data) => {
     console.log(session);
     console.log(boardId);
+    console.log(data); 
     await axios.post("../../api/boards/[boardId]/comments", {
       comment: data.comment,
       userId: session.user.id,
@@ -119,6 +130,7 @@ export default function board({
     });
 
     router.reload();
+    
   };
 
   const postfavorite = (commentId) => {
@@ -294,7 +306,7 @@ export default function board({
         {status === "unauthenticated" || (
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ m: 2 }}>
-              <TextField
+              {/*<TextField
                 fullWidth
                 required
                 id="comment-form"
@@ -302,7 +314,27 @@ export default function board({
                 multiline
                 rows={6}
                 {...register("comment")}
+        />*/}
+              
+            <Controller
+              name = "comment"
+              control={control}
+              rules={validationRules.comment} 
+              render = {({field, fieldState}) => (
+                <TextField
+                {...field}
+                required
+                fullWidth
+                id="commentForm"
+                label="コメントを投稿"
+                multiline
+                rows={6}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
               />
+              )}
+              />
+
 
               <Button
                 type="submit "
