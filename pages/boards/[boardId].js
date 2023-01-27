@@ -137,12 +137,9 @@ export default function board({
     });
     //ページ切り替えのときページ内リンクに飛ぶ
     //router.replace(`/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
-    /* 近日実装
-    if(commentCount < take) {
-      history.pushState(null, null, `/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
-    } else {
-      history.pushState(null, null, `/boards/${boardId}?page=${page+1}#comment.${page*take +1}`);
-    }*/
+    /* 近日実装　*/
+  
+    history.pushState(null, null, `/boards/${boardId}?page=${Math.ceil( ( commentCount + 1) / take)}#comment.${commentCount +1}`);
     router.reload();
   };
 
@@ -372,7 +369,7 @@ export default function board({
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              通報フォーム
+              通報フォーム {/*近日実装*/}
             </Typography>
 
             <form>
@@ -417,7 +414,7 @@ export default function board({
 export async function getServerSideProps(context) {
   const page = +context.query.page || 1;
   const take = 50;
-
+  //console.log(page"page);
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
   const session = await unstable_getServerSession(

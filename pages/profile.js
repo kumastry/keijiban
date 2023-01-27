@@ -66,7 +66,7 @@ export default function profile({boardCountByUserId, commentCountByUserId, favor
       </Dialog>
         </div>
       ) : (
-        <p>サインインしな</p>
+        <p>Loading...</p>
       )}
     </main>
   );
