@@ -135,7 +135,9 @@ export default function board({
       userId: session.user.id,
       boardId,
     });
-
+    //ページ切り替えのときページ内リンクに飛ぶ
+    //router.replace(`/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
+    history.pushState(null, null, `/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
     router.reload();
   };
 
@@ -223,7 +225,7 @@ export default function board({
         justifyContent="center"
         direction="column"
       >
-        <Box component="pagination" sx={{}}>
+        <Box>
           <Pagination
             count={Math.floor((commentCount + take - 1) / take)}
             onChange={handleChange}
@@ -250,8 +252,9 @@ export default function board({
         <List>
           {comments.map((item, key) => {
             console.log(key);
+            console.log(`comment.${(key + 1)+(page-1)*take}`);
             return (
-              <ListItem divider alignItems="flex-start">
+              <ListItem divider alignItems="flex-start" id = {`comment.${(key + 1)+(page-1)*take}`}>
                 <ListItemAvatar>
                   <Avatar src={commentUsers[key].image} alt={"icon"} />
                 </ListItemAvatar>
