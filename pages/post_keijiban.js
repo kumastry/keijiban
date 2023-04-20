@@ -22,11 +22,14 @@ import { useState, useRef } from "react";
 
 export default function post_keijiban() {
   const { data: session, status } = useSession();
+
+  //useFormとvalidationRulesは一体化できる
+  //このformと掲示板コメント投稿のformは一体化できるかも
   const { control, handleSubmit } = useForm({
     defaultValues: { title: "", category: "", description: "" },
   });
 
-  //なんのopen?
+  //なんのopen?(抽象的すぎる) → 関数を具体的にする
   //掲示板を投稿したときのフィードバックのためのsnackbarのopen
   const [open, setOpen] = useState(true);
 
@@ -61,13 +64,15 @@ export default function post_keijiban() {
     }
   };*/
 
-  //
+  //useRouterとpostkeijibanは押したときの処理として共通化できる
+  //またコメント投稿でも同じことできるかも
   const router = useRouter();
 
   //console.log(session);
   //console.log(status);
 
   //postkeijiban分かりにくい
+  //ハンドラーと分かるように変数名を付ける
   //入力したデータをpostする処理
   const postKeijiban = async (data) => {
     //console.log(data);
