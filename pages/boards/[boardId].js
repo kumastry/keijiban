@@ -49,6 +49,8 @@ import Stack from "@mui/system/Stack";
 import dayjs from "dayjs";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 
+import useFormValidation from "./../../hooks/useFormValidation";
+
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
 // api/boards/boardId/comments
@@ -79,9 +81,8 @@ export default function board({
   commentUsers,
   board,
 }) {
-  const { control, handleSubmit } = useForm({
-    defaultValues: { comment: "" },
-  });
+  const { control, handleSubmit, validationRules } = useFormValidation({ comment: "" });
+
   const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
@@ -97,13 +98,6 @@ export default function board({
   console.log(commentCount);
   console.log(Math.floor((commentCount + take - 1) / commentCount));
   */
-  const validationRules = {
-    comment: {
-      required: "コメントを入力してください。",
-      maxLength: { value: 600, message: "600文字以下で入力してください。" },
-      minLength: { value: 0, message: "コメントを入力してください" },
-    },
-  };
 
   const handleChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);

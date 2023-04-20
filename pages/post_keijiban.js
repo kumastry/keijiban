@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import { useState, useRef } from "react";
 
+import useFormValidation from "../hooks/useFormValidation";
+
 //TODO:リファクタリング
 //- ビューとロジックを分ける
 //- 変数名を考える　→　具体的な処理の変数名
@@ -21,14 +23,16 @@ import { useState, useRef } from "react";
 // jsxはセマンティックにする
 
 export default function post_keijiban() {
-  const { data: session, status } = useSession();
+  const { data: session} = useSession();
 
   //useFormとvalidationRulesは一体化できる
   //このformと掲示板コメント投稿のformは一体化できるかも
-  const { control, handleSubmit } = useForm({
+  /*const { control, handleSubmit } = useForm({
     defaultValues: { title: "", category: "", description: "" },
-  });
+  });*/
 
+  const {control, handleSubmit, validationRules} =
+  useFormValidation({ title: "", category: "", description: "" });
   //なんのopen?(抽象的すぎる) → 関数を具体的にする
   //掲示板を投稿したときのフィードバックのためのsnackbarのopen
   const [open, setOpen] = useState(true);
@@ -40,7 +44,7 @@ export default function post_keijiban() {
   */
 
   //バリデーションは外に出そうね
-  const validationRules = {
+  /*const validationRules = {
     title: {
       required: "掲示板名を入力してください。",
       maxLength: { value: 200, message: "200文字以下で入力してください。" },
@@ -51,7 +55,7 @@ export default function post_keijiban() {
       maxLength: { value: 400, message: "400文字以下で入力してください。" },
       minLength: { value: 0, message: "掲示板名を入力してください" },
     },
-  };
+  };*/
 
   /*const handleChange = () => {
     if (inputRef.current) {
