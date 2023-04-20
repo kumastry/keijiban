@@ -24,13 +24,15 @@ import { Grid, Box } from "@mui/material";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
+import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
+
 const newLineStyle = {
   whiteSpace: "pre-wrap",
   wordWrap: "break-word",
 };
 
 export default function Home({ boards, boardCount, take, page }) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   /*
@@ -38,7 +40,8 @@ export default function Home({ boards, boardCount, take, page }) {
   console.log((boardCount + take - 1) / take);
   */
   //なんのhandleChange?
-  const handleChange = (e, page) => {
+  const handlePaginationChange = (event, page) => {
+    console.log("page", page);
     router.push(`/?page=${page}`);
   };
 
@@ -46,6 +49,7 @@ export default function Home({ boards, boardCount, take, page }) {
 
   return (
     <>
+      {/*SEOは外部に設置する*/}
       <Head>
         <title>kumastry keijiban</title>
         <meta name="description" content="本格的な掲示板　ただそれだけ" />
@@ -64,22 +68,13 @@ export default function Home({ boards, boardCount, take, page }) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box component="pagination" sx={{}}>
-          <Pagination
-            count={Math.floor((boardCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+      {/* ページネーション共通化できそう */}
+      <PaginationForKeijiban
+        totalItemCount={boardCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
 
       <main className={styles.main}>
         <Box sx={{ minWidth: "70%", maxWidth: "70%", margin: 5 }}>
@@ -140,22 +135,13 @@ export default function Home({ boards, boardCount, take, page }) {
           </Fab>
         </Link>
       )}
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box component="pagination" sx={{}}>
-          <Pagination
-            count={Math.floor((boardCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+
+      <PaginationForKeijiban
+        totalItemCount={boardCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
     </>
   );
 }
@@ -168,6 +154,7 @@ export async function getServerSideProps({ params, query }) {
   //const boardId = +params.boardId;
   //console.log("query", query);
   //console.log(page);
+  //並行処理
   const boards = await getBoards(take, (page - 1) * take);
   const boardCount = await getBoardCount();
   //const commentCount = await getCommentCount(boardId);

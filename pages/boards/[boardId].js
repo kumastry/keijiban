@@ -50,6 +50,7 @@ import dayjs from "dayjs";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 
 import useFormValidation from "./../../hooks/useFormValidation";
+import PaginationForKeijiban from "../../components/UIs/PaginationForKeijiban";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -101,7 +102,7 @@ export default function board({
   console.log(Math.floor((commentCount + take - 1) / commentCount));
   */
 
-  const handleChange = (e, page) => {
+  const handlePaginationChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
   };
 
@@ -223,22 +224,12 @@ export default function board({
 
   return (
     <>
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box>
-          <Pagination
-            count={Math.floor((commentCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+      <PaginationForKeijiban
+        totalItemCount={commentCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
 
       <main className={styles.boardId}>
         {commentCount < commentLimit || (
@@ -402,22 +393,12 @@ export default function board({
         </Modal>
       </main>
 
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box sx={{ m: 2 }}>
-          <Pagination
-            count={Math.floor((commentCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+      <PaginationForKeijiban
+        totalItemCount={commentCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
     </>
   );
 }

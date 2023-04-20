@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 //try catchする必要がある
 const useCreateKeijibanHandler = () => {
   const router = useRouter();
-  const { data: session} = useSession();
+  const { data: session } = useSession();
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const postKeijiban = async (data) => {
     //console.log(data);
