@@ -8,7 +8,7 @@ import {
   getBoard,
   getfavorites,
   getfavoriteCount,
-  getCommentCountByBoardId
+  getCommentCountByBoardId,
 } from "../api/getDatabese";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -35,7 +35,7 @@ import ListItemText from "@mui/material/ListItemText";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import IconButton from "@mui/material/IconButton";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Pagination from "@mui/material/Pagination";
 import Modal from "@mui/material/Modal";
@@ -138,8 +138,14 @@ export default function board({
     //ページ切り替えのときページ内リンクに飛ぶ
     //router.replace(`/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
     /* 近日実装　*/
-  
-    history.pushState(null, null, `/boards/${boardId}?page=${Math.ceil( ( commentCount + 1) / take)}#comment.${commentCount +1}`);
+
+    history.pushState(
+      null,
+      null,
+      `/boards/${boardId}?page=${Math.ceil(
+        (commentCount + 1) / take
+      )}#comment.${commentCount + 1}`
+    );
     router.reload();
   };
 
@@ -239,7 +245,11 @@ export default function board({
       </Grid>
 
       <main className={styles.boardId}>
-        {commentCount < commentLimit || <h3 style={{color:"red", margin:5}}>※コメント数が上限に達しました</h3>}
+        {commentCount < commentLimit || (
+          <h3 style={{ color: "red", margin: 5 }}>
+            ※コメント数が上限に達しました
+          </h3>
+        )}
         <header style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="h4">
             {board.title}
@@ -254,9 +264,13 @@ export default function board({
         <List>
           {comments.map((item, key) => {
             console.log(key);
-            console.log(`comment.${(key + 1)+(page-1)*take}`);
+            console.log(`comment.${key + 1 + (page - 1) * take}`);
             return (
-              <ListItem divider alignItems="flex-start" id = {`comment.${(key + 1)+(page-1)*take}`}>
+              <ListItem
+                divider
+                alignItems="flex-start"
+                id={`comment.${key + 1 + (page - 1) * take}`}
+              >
                 <ListItemAvatar>
                   <Avatar src={commentUsers[key].image} alt={"icon"} />
                 </ListItemAvatar>
@@ -268,8 +282,9 @@ export default function board({
                       variant="subtitle2"
                       color="text.secondary"
                     >
-                      {(key + 1)+(page-1)*take
-                       +
+                      {key +
+                        1 +
+                        (page - 1) * take +
                         ". " +
                         commentUsers[key].name +
                         " ID:" +
@@ -417,11 +432,7 @@ export async function getServerSideProps(context) {
   //console.log(page"page);
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   console.log("sesson", session);
 
@@ -458,6 +469,7 @@ export async function getServerSideProps(context) {
     //getUserByUserId(userId),
   ]);
 
+  //N+1
   const commentUsers = await Promise.all(
     commentUserIds.map((element) => getUserByUserId(element.userId))
   );

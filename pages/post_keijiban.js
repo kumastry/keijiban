@@ -12,16 +12,31 @@ import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import { useState, useRef } from "react";
 
+//TODO:リファクタリング
+//- ビューとロジックを分ける
+//- 変数名を考える　→　具体的な処理の変数名
+//- 理解しにくいコードを見つける
+//- 抽象化する
+//- 使わないコードをコメントアウトする
+// jsxはセマンティックにする
+
 export default function post_keijiban() {
   const { data: session, status } = useSession();
   const { control, handleSubmit } = useForm({
     defaultValues: { title: "", category: "", description: "" },
   });
+
+  //なんのopen?
+  //掲示板を投稿したときのフィードバックのためのsnackbarのopen
   const [open, setOpen] = useState(true);
 
+  //使わないならコメントアウトしようね
+  /*今は使わない、将来使うカモ
   const inputRef = useRef(null);
   const [inputError, setInputError] = useState(false);
+  */
 
+  //バリデーションは外に出そうね
   const validationRules = {
     title: {
       required: "掲示板名を入力してください。",
@@ -35,7 +50,7 @@ export default function post_keijiban() {
     },
   };
 
-  const handleChange = () => {
+  /*const handleChange = () => {
     if (inputRef.current) {
       const ref = inputRef.current;
       if (!ref.validity.valid) {
@@ -44,13 +59,16 @@ export default function post_keijiban() {
         setInputError(false);
       }
     }
-  };
+  };*/
 
+  //
   const router = useRouter();
 
   //console.log(session);
   //console.log(status);
 
+  //postkeijiban分かりにくい
+  //入力したデータをpostする処理
   const postKeijiban = async (data) => {
     //console.log(data);
     const { title, category, description } = data;
@@ -68,12 +86,14 @@ export default function post_keijiban() {
 
     router.push("..");
   };
+
   return (
     <>
       <main className={styles.main}>
         <Box sx={{ width: "75%" }}>
           <form method="post" onSubmit={handleSubmit(postKeijiban)}>
             <Stack spacing={5}>
+
               <Controller
                 name="title"
                 control={control}
@@ -106,6 +126,8 @@ export default function post_keijiban() {
                     style={{ width: "35%" }}
                     error={fieldState.invalid}
                   >
+
+                    {/*ここ繰り返さない 抽象化できる*/}
                     <MenuItem value="ニュース">ニュース</MenuItem>
                     <MenuItem value="日常">日常</MenuItem>
                     <MenuItem value="学習">学習</MenuItem>
@@ -134,35 +156,6 @@ export default function post_keijiban() {
                 )}
               />
 
-              {/* <TextField
-                id="standard-select-currency"
-                required
-                select
-                label="カテゴリー"
-                helperText="カテゴリーを選択"
-                variant="standard"
-                style={{ width: "30%" }}
-                {...control("category")}
-              >
-                <MenuItem value="ニュース">ニュース</MenuItem>
-                <MenuItem value="日常">日常</MenuItem>
-                <MenuItem value="学習">学習</MenuItem>
-                <MenuItem value="相談">相談</MenuItem>
-                <MenuItem value="ペット">ペット</MenuItem>
-                <MenuItem value="その他">その他</MenuItem>
-              </TextField>
-
-              <TextField
-                id="outlined-multiline-static"
-                label="掲示板の概要"
-                required
-                multiline
-                inputProps={{ maxLength: 400}}
-                fullWidth
-                rows={6}
-                {...control("description")}
-              /> */}
-
               <Button
                 type="submit"
                 variant="contained"
@@ -170,6 +163,7 @@ export default function post_keijiban() {
               >
                 掲示板を投稿
               </Button>
+
             </Stack>
           </form>
         </Box>
@@ -186,6 +180,6 @@ export default function post_keijiban() {
 
 export async function getStaticProps(context) {
   return {
-    props: {}, // will be passed to the page component as props
+    props: {}, 
   };
 }

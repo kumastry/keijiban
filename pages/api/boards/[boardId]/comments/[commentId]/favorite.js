@@ -19,72 +19,72 @@ export default async function handler(req, res) {
   //const clientIp = requestIp.getClientIp(req) || "IP_NOT_FOUND";
   //console.log(clientIp);
   //commentIdとuserIdが必要
-  if(session) {
-  if (req.method === "POST") {
-    console.log("post");
-    try {
-      //await limiter.check(res, limitCount, clientIp);
-      console.log("FDPOPOPOFPOFPDOPFPPD");
-      console.log(req.query);
-      const commentId = +req.body.commentId;
-      const userId = req.body.userId;
-      const boardId = +req.body.boardId;
-      console.log(commentId);
-      console.log(userId);
-      const result = await prisma.favorite.create({
-        data: {
-          userId,
-          commentId,
-          boardId,
-        },
-      });
-      res.json(result);
-    } catch (e) {
-      console.error(e);
-    }
-  } else if (req.method === "GET") {
-    //console.log("YUFYUDGFUGSFD")
-    //console.log(req.query)
-    const boardId = +req.query.id;
-    //console.log(commentId);
-    const result = await prisma.favorite.findMany({
-      where: {
-        AND: [{ userId: session.user.id }, { boardId }],
-      },
-      select: {
-        commentId: true,
-      },
-    });
-    //console.log(result);
-    if (result) {
-      res.json(result);
-    }
-  } else if (req.method === "DELETE") {
-    //console.log("MOMOMMM");
-    console.log("delete");
-    //console.log(req.body)
-    //const userId = req.body.userId;
-    try {
-      //await limiter.check(res, limitCount, clientIp);
-      const commentId = +req.body.commentId;
-      const deleteRecord = await prisma.favorite.findFirst({
+  if (session) {
+    if (req.method === "POST") {
+      console.log("post");
+      try {
+        //await limiter.check(res, limitCount, clientIp);
+        console.log("FDPOPOPOFPOFPDOPFPPD");
+        console.log(req.query);
+        const commentId = +req.body.commentId;
+        const userId = req.body.userId;
+        const boardId = +req.body.boardId;
+        console.log(commentId);
+        console.log(userId);
+        const result = await prisma.favorite.create({
+          data: {
+            userId,
+            commentId,
+            boardId,
+          },
+        });
+        res.json(result);
+      } catch (e) {
+        console.error(e);
+      }
+    } else if (req.method === "GET") {
+      //console.log("YUFYUDGFUGSFD")
+      //console.log(req.query)
+      const boardId = +req.query.id;
+      //console.log(commentId);
+      const result = await prisma.favorite.findMany({
         where: {
-          AND: [{ userId: session.user.id }, { commentId }],
+          AND: [{ userId: session.user.id }, { boardId }],
         },
         select: {
-          id: true,
+          commentId: true,
         },
       });
+      //console.log(result);
+      if (result) {
+        res.json(result);
+      }
+    } else if (req.method === "DELETE") {
+      //console.log("MOMOMMM");
+      console.log("delete");
+      //console.log(req.body)
+      //const userId = req.body.userId;
+      try {
+        //await limiter.check(res, limitCount, clientIp);
+        const commentId = +req.body.commentId;
+        const deleteRecord = await prisma.favorite.findFirst({
+          where: {
+            AND: [{ userId: session.user.id }, { commentId }],
+          },
+          select: {
+            id: true,
+          },
+        });
 
-      //console.log(deleteRecord);
-      const deletefavorite = await prisma.favorite.delete({
-        where: {
-          id: deleteRecord.id,
-        },
-      });
-    } catch (e) {
-      console.error(e);
+        //console.log(deleteRecord);
+        const deletefavorite = await prisma.favorite.delete({
+          where: {
+            id: deleteRecord.id,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
-}
 }

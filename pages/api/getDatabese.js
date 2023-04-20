@@ -13,35 +13,33 @@ import prisma from "../../lib/prismadb";
 
 export const getBoardCountByUserId = async (userId) => {
   const boardCount = await prisma.board.count({
-    where:{
-      userId
-    }
+    where: {
+      userId,
+    },
   });
 
   return boardCount;
-}
+};
 
 export const getCommentCountByUserId = async (userId) => {
   const commentCount = await prisma.comment.count({
-    where:{
-      userId
-    }
+    where: {
+      userId,
+    },
   });
 
   return commentCount;
+};
 
-}
-  
 export const getFavoriteCountByUserId = async (userId) => {
   const favriteCount = await prisma.favorite.count({
-    where:{
-      userId
-    }
+    where: {
+      userId,
+    },
   });
 
   return favriteCount;
-
-}
+};
 
 export const getCommentCount = async () => {
   const comment = await prisma.comment.count();
@@ -50,13 +48,13 @@ export const getCommentCount = async () => {
 
 export const getCommentCountByBoardId = async (boardId) => {
   const commentCount = await prisma.comment.count({
-    where:{
-      boardId
-    }
+    where: {
+      boardId,
+    },
   });
 
   return commentCount;
-}
+};
 
 export const getBoard = async (boardId) => {
   const board = await prisma.board.findUnique({

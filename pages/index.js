@@ -33,13 +33,16 @@ export default function Home({ boards, boardCount, take, page }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  /*
   console.log((boardCount + take - 1) / boardCount);
   console.log((boardCount + take - 1) / take);
+  */
+  //なんのhandleChange?
   const handleChange = (e, page) => {
     router.push(`/?page=${page}`);
   };
 
-  console.log(status);
+  //console.log(status);
 
   return (
     <>
@@ -51,7 +54,10 @@ export default function Home({ boards, boardCount, take, page }) {
         <meta charset="utf-8" />
         <meta property="og:title" content="kumastry keijiban" />
         <meta property="og:site_name" content="kumastry keijiban" />
-        <meta property="og:description" content="本格的な掲示板　ただそれだけ" />
+        <meta
+          property="og:description"
+          content="本格的な掲示板　ただそれだけ"
+        />
         <meta property="og:url" content="%PUBLIC_URL%" />
         <meta property="og:type" content="website" />
         {/*<meta property="og:image" content="%PUBLIC_URL%/images/ogp.png" /> */}
@@ -83,7 +89,7 @@ export default function Home({ boards, boardCount, take, page }) {
                 <Card>
                   <CardContent>
                     <Typography variant="h5" sx={newLineStyle}>
-                      {key + 1 + (page-1)*take}.{board.title}
+                      {key + 1 + (page - 1) * take}.{board.title}
                     </Typography>
 
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -112,27 +118,26 @@ export default function Home({ boards, boardCount, take, page }) {
           </Stack>
         </Box>
       </main>
+
+      {/*改良の余地あり*/}
       {status !== "authenticated" || (
         <Link href={"/post_keijiban"}>
-        <Fab
-          variant="extended"
-          color="primary"
-          aria-label="add"
-          sx={{
-            margin: 5,
-            top: "auto",
-            right: 0,
-            bottom: 0,
-            left: "auto",
-            position: "fixed",
-          }}
-        >
-          <PostAddIcon/>
-          
-            
+          <Fab
+            variant="extended"
+            color="primary"
+            aria-label="add"
+            sx={{
+              margin: 10,
+              top: "auto",
+              right: 0,
+              bottom: 0,
+              left: "auto",
+              position: "fixed",
+            }}
+          >
+            <PostAddIcon />
             掲示板作成
-          
-        </Fab>
+          </Fab>
         </Link>
       )}
       <Grid
@@ -156,18 +161,19 @@ export default function Home({ boards, boardCount, take, page }) {
 }
 
 export async function getServerSideProps({ params, query }) {
+  //この数字は定数とする
   const page = +query.page || 1;
   const take = 5;
-  console.log(params);
+  //console.log(params);
   //const boardId = +params.boardId;
-  console.log("query", query);
-  console.log(page);
+  //console.log("query", query);
+  //console.log(page);
   const boards = await getBoards(take, (page - 1) * take);
   const boardCount = await getBoardCount();
   //const commentCount = await getCommentCount(boardId);
-  console.log(boards);
-  console.log(boardCount);
-  console.log("serversidepros");
+  //console.log(boards);
+  //console.log(boardCount);
+  //console.log("serversidepros");
   return {
     props: { boards, boardCount, take, page }, // will be passed to the page component as props
   };
