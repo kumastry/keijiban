@@ -1,19 +1,20 @@
+//styles
 import styles from "../styles/Home.module.css";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import { MenuItem } from "@mui/material";
-import PostAddIcon from "@mui/icons-material/PostAdd";
-import Button from "@mui/material/Button";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import Stack from "@mui/material/Stack";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import Snackbar from "@mui/material/Snackbar";
-import { useState, useRef } from "react";
 
+//hooks
+import { Controller } from "react-hook-form";
 import useFormValidation from "../hooks/useFormValidation";
 import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
+
+//MUI imports
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import PostAddIcon from "@mui/icons-material/PostAdd";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
+
 //TODO:リファクタリング
 //- ビューとロジックを分ける
 //- 変数名を考える　→　具体的な処理の変数名
@@ -21,6 +22,7 @@ import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
 //- 抽象化する
 //- 使わないコードをコメントアウトする
 // jsxはセマンティックにする
+
 //useFormとvalidationRulesは一体化できる
 //このformと掲示板コメント投稿のformは一体化できるかも
 //useRouterとpostkeijibanは押したときの処理として共通化できる
