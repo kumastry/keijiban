@@ -1,4 +1,5 @@
 import { NextSeo } from "next-seo";
+import Head from "next/head";
 
 const keijibanHead = () => {
   return (
