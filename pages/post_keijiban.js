@@ -1,7 +1,7 @@
-//styles
+//styles imports
 import styles from "../styles/Home.module.css";
 
-//hooks
+//hooks imports
 import { Controller } from "react-hook-form";
 import useFormValidation from "../hooks/useFormValidation";
 import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
@@ -40,9 +40,12 @@ export default function post_keijiban() {
   //セッションがないとリダイレクトする必要がある
   //const { data: session} = useSession();
 
-  const {control, handleSubmit, validationRules} =
-  useFormValidation({ title: "", category: "", description: "" });
-  const {postKeijiban, isSnackbarOpen} = useCreateKeijibanHandler();
+  const { control, handleSubmit, validationRules } = useFormValidation({
+    title: "",
+    category: "",
+    description: "",
+  });
+  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler();
 
   /*const handleChange = () => {
     if (inputRef.current) {
@@ -60,7 +63,7 @@ export default function post_keijiban() {
         <Box sx={{ width: "75%" }}>
           <form method="post" onSubmit={handleSubmit(postKeijiban)}>
             <Stack spacing={5}>
-
+              {/*コントローラは共通化できる？*/}
               <Controller
                 name="title"
                 control={control}
@@ -93,7 +96,6 @@ export default function post_keijiban() {
                     style={{ width: "35%" }}
                     error={fieldState.invalid}
                   >
-
                     {/*ここ繰り返さない 抽象化できる*/}
                     <MenuItem value="ニュース">ニュース</MenuItem>
                     <MenuItem value="日常">日常</MenuItem>
@@ -130,7 +132,6 @@ export default function post_keijiban() {
               >
                 掲示板を投稿
               </Button>
-
             </Stack>
           </form>
         </Box>
@@ -147,6 +148,6 @@ export default function post_keijiban() {
 
 export async function getStaticProps(context) {
   return {
-    props: {}, 
+    props: {},
   };
 }

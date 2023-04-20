@@ -26,6 +26,8 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 
 import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
 
+import KeijibanHead from "./../components/KeijibanHead";
+
 const newLineStyle = {
   whiteSpace: "pre-wrap",
   wordWrap: "break-word",
@@ -50,6 +52,7 @@ export default function Home({ boards, boardCount, take, page }) {
   return (
     <>
       {/*SEOは外部に設置する*/}
+      {/*
       <Head>
         <title>kumastry keijiban</title>
         <meta name="description" content="本格的な掲示板　ただそれだけ" />
@@ -64,10 +67,11 @@ export default function Home({ boards, boardCount, take, page }) {
         />
         <meta property="og:url" content="%PUBLIC_URL%" />
         <meta property="og:type" content="website" />
-        {/*<meta property="og:image" content="%PUBLIC_URL%/images/ogp.png" /> */}
+        <meta property="og:image" content="%PUBLIC_URL%/images/ogp.png" />
         <meta name="twitter:card" content="summary_large_image" />
-      </Head>
+  </Head> */}
 
+      <KeijibanHead />
       {/* ページネーション共通化できそう */}
       <PaginationForKeijiban
         totalItemCount={boardCount}
