@@ -81,7 +81,9 @@ export default function board({
   commentUsers,
   board,
 }) {
-  const { control, handleSubmit, validationRules } = useFormValidation({ comment: "" });
+  const { control, handleSubmit, validationRules } = useFormValidation({
+    comment: "",
+  });
 
   const { data: session, status } = useSession();
   const router = useRouter();

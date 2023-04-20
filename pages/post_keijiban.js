@@ -13,7 +13,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { useState, useRef } from "react";
 
 import useFormValidation from "../hooks/useFormValidation";
-
+import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
 //TODO:リファクタリング
 //- ビューとロジックを分ける
 //- 変数名を考える　→　具体的な処理の変数名
@@ -21,41 +21,26 @@ import useFormValidation from "../hooks/useFormValidation";
 //- 抽象化する
 //- 使わないコードをコメントアウトする
 // jsxはセマンティックにする
+//useFormとvalidationRulesは一体化できる
+//このformと掲示板コメント投稿のformは一体化できるかも
+//useRouterとpostkeijibanは押したときの処理として共通化できる
+//またコメント投稿でも同じことできるかも
+//postkeijiban分かりにくい
+//ハンドラーと分かるように変数名を付ける
+//入力したデータをpostする処理
+//なんのopen?(抽象的すぎる) → 関数を具体的にする
+//掲示板を投稿したときのフィードバックのためのsnackbarのopen
+//使わないならコメントアウトしようね
+//今は使わない、将来使うカモ
+//バリデーションは外に出そうね
 
 export default function post_keijiban() {
-  const { data: session} = useSession();
-
-  //useFormとvalidationRulesは一体化できる
-  //このformと掲示板コメント投稿のformは一体化できるかも
-  /*const { control, handleSubmit } = useForm({
-    defaultValues: { title: "", category: "", description: "" },
-  });*/
+  //セッションがないとリダイレクトする必要がある
+  //const { data: session} = useSession();
 
   const {control, handleSubmit, validationRules} =
   useFormValidation({ title: "", category: "", description: "" });
-  //なんのopen?(抽象的すぎる) → 関数を具体的にする
-  //掲示板を投稿したときのフィードバックのためのsnackbarのopen
-  const [open, setOpen] = useState(true);
-
-  //使わないならコメントアウトしようね
-  /*今は使わない、将来使うカモ
-  const inputRef = useRef(null);
-  const [inputError, setInputError] = useState(false);
-  */
-
-  //バリデーションは外に出そうね
-  /*const validationRules = {
-    title: {
-      required: "掲示板名を入力してください。",
-      maxLength: { value: 200, message: "200文字以下で入力してください。" },
-      minLength: { value: 0, message: "掲示板名を入力してください" },
-    },
-    description: {
-      required: "掲示板の概要を入力してください。",
-      maxLength: { value: 400, message: "400文字以下で入力してください。" },
-      minLength: { value: 0, message: "掲示板名を入力してください" },
-    },
-  };*/
+  const {postKeijiban, isSnackbarOpen} = useCreateKeijibanHandler();
 
   /*const handleChange = () => {
     if (inputRef.current) {
@@ -67,35 +52,6 @@ export default function post_keijiban() {
       }
     }
   };*/
-
-  //useRouterとpostkeijibanは押したときの処理として共通化できる
-  //またコメント投稿でも同じことできるかも
-  const router = useRouter();
-
-  //console.log(session);
-  //console.log(status);
-
-  //postkeijiban分かりにくい
-  //ハンドラーと分かるように変数名を付ける
-  //入力したデータをpostする処理
-  const postKeijiban = async (data) => {
-    //console.log(data);
-    const { title, category, description } = data;
-    //console.log(title);
-    //console.log(category);
-    //console.log(description);
-
-    setOpen(!open);
-    await axios.post("api/boards", {
-      title,
-      category,
-      description,
-      userId: session.user.id,
-    });
-
-    router.push("..");
-  };
-
   return (
     <>
       <main className={styles.main}>
@@ -178,7 +134,7 @@ export default function post_keijiban() {
         </Box>
 
         <Snackbar
-          open={!open}
+          open={isSnackbarOpen}
           autoHideDuration={6000}
           message="掲示板を投稿しました"
         />
