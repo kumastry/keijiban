@@ -25,6 +25,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
 import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
+import KeijibanCard from "../components/KeijibanCard";
 
 import KeijibanHead from "./../components/KeijibanHead";
 
@@ -85,33 +86,13 @@ export default function Home({ boards, boardCount, take, page }) {
           <Stack spacing={2}>
             {boards.map((board, key) => {
               return (
-                <Card>
-                  <CardContent>
-                    <Typography variant="h5" sx={newLineStyle}>
-                      {key + 1 + (page - 1) * take}.{board.title}
-                    </Typography>
-
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      カテゴリー:{board.category}
-                    </Typography>
-
-                    <Typography variant="body1" sx={newLineStyle}>
-                      {board.description}
-                    </Typography>
-                  </CardContent>
-
-                  <CardActions
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      margin: 1,
-                    }}
-                  >
-                    <Link href={`/boards/${board.id}`}>
-                      <Button size="large">掲示板を見る</Button>
-                    </Link>
-                  </CardActions>
-                </Card>
+                <KeijibanCard
+                number = {key + 1 + (page - 1) * take} 
+                id = {board.id}
+                title={board.title}
+                category={board.category}
+                description={board.description}
+                />
               );
             })}
           </Stack>
