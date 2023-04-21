@@ -87,11 +87,11 @@ export default function Home({ boards, boardCount, take, page }) {
             {boards.map((board, key) => {
               return (
                 <KeijibanCard
-                number = {key + 1 + (page - 1) * take} 
-                id = {board.id}
-                title={board.title}
-                category={board.category}
-                description={board.description}
+                  number={key + 1 + (page - 1) * take}
+                  id={board.id}
+                  title={board.title}
+                  category={board.category}
+                  description={board.description}
                 />
               );
             })}

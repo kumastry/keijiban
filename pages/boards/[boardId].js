@@ -237,17 +237,17 @@ export default function board({
             ※コメント数が上限に達しました
           </h3>
         )}
-        <header style={{ margin: 10 }}>
+        <h1 style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="h4">
             {board.title}
           </Typography>
-        </header>
+        </h1>
 
-        <article style={{ margin: 10 }}>
+        <section style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="body1">
             {board.description}
           </Typography>
-        </article>
+        </section>
         <List>
           {comments.map((item, key) => {
             console.log(key);
