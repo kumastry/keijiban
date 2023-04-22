@@ -1,79 +1,59 @@
+//styles imports
 import styles from "../styles/Home.module.css";
+
+//hooks imports
+import { Controller } from "react-hook-form";
+import useFormValidation from "../hooks/useFormValidation";
+import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
+
+//MUI imports
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { MenuItem } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import Button from "@mui/material/Button";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import Stack from "@mui/material/Stack";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
-import { useState, useRef } from "react";
+import Stack from "@mui/material/Stack";
 
-export default function post_keijiban() {
-  const { data: session, status } = useSession();
-  const { control, handleSubmit } = useForm({
-    defaultValues: { title: "", category: "", description: "" },
+//TODO:リファクタリング
+//- ビューとロジックを分ける
+//- 変数名を考える　→　具体的な処理の変数名
+//- 理解しにくいコードを見つける
+//- 抽象化する
+//- 使わないコードをコメントアウトする
+// jsxはセマンティックにする
+
+//useFormとvalidationRulesは一体化できる
+//このformと掲示板コメント投稿のformは一体化できるかも
+//useRouterとpostkeijibanは押したときの処理として共通化できる
+//またコメント投稿でも同じことできるかも
+//postkeijiban分かりにくい
+//ハンドラーと分かるように変数名を付ける
+//入力したデータをpostする処理
+//なんのopen?(抽象的すぎる) → 関数を具体的にする
+//掲示板を投稿したときのフィードバックのためのsnackbarのopen
+//使わないならコメントアウトしようね
+//今は使わない、将来使うカモ
+//バリデーションは外に出そうね
+//セッションがないとリダイレクトする必要がある
+
+export default function post_keijiban({session}) {
+ 
+  
+  const { control, handleSubmit, validationRules } = useFormValidation({
+    title: "",
+    category: "",
+    description: "",
   });
-  const [open, setOpen] = useState(true);
+  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler({session});
 
-  const inputRef = useRef(null);
-  const [inputError, setInputError] = useState(false);
-
-  const validationRules = {
-    title: {
-      required: "掲示板名を入力してください。",
-      maxLength: { value: 200, message: "200文字以下で入力してください。" },
-      minLength: { value: 0, message: "掲示板名を入力してください" },
-    },
-    description: {
-      required: "掲示板の概要を入力してください。",
-      maxLength: { value: 400, message: "400文字以下で入力してください。" },
-      minLength: { value: 0, message: "掲示板名を入力してください" },
-    },
-  };
-
-  const handleChange = () => {
-    if (inputRef.current) {
-      const ref = inputRef.current;
-      if (!ref.validity.valid) {
-        setInputError(true);
-      } else {
-        setInputError(false);
-      }
-    }
-  };
-
-  const router = useRouter();
-
-  //console.log(session);
-  //console.log(status);
-
-  const postKeijiban = async (data) => {
-    //console.log(data);
-    const { title, category, description } = data;
-    //console.log(title);
-    //console.log(category);
-    //console.log(description);
-
-    setOpen(!open);
-    await axios.post("api/boards", {
-      title,
-      category,
-      description,
-      userId: session.user.id,
-    });
-
-    router.push("..");
-  };
   return (
     <>
       <main className={styles.main}>
         <Box sx={{ width: "75%" }}>
           <form method="post" onSubmit={handleSubmit(postKeijiban)}>
             <Stack spacing={5}>
+              {/*コントローラは共通化できる？*/}
               <Controller
                 name="title"
                 control={control}
@@ -106,6 +86,7 @@ export default function post_keijiban() {
                     style={{ width: "35%" }}
                     error={fieldState.invalid}
                   >
+                    {/*ここ繰り返さない 抽象化できる*/}
                     <MenuItem value="ニュース">ニュース</MenuItem>
                     <MenuItem value="日常">日常</MenuItem>
                     <MenuItem value="学習">学習</MenuItem>
@@ -134,35 +115,6 @@ export default function post_keijiban() {
                 )}
               />
 
-              {/* <TextField
-                id="standard-select-currency"
-                required
-                select
-                label="カテゴリー"
-                helperText="カテゴリーを選択"
-                variant="standard"
-                style={{ width: "30%" }}
-                {...control("category")}
-              >
-                <MenuItem value="ニュース">ニュース</MenuItem>
-                <MenuItem value="日常">日常</MenuItem>
-                <MenuItem value="学習">学習</MenuItem>
-                <MenuItem value="相談">相談</MenuItem>
-                <MenuItem value="ペット">ペット</MenuItem>
-                <MenuItem value="その他">その他</MenuItem>
-              </TextField>
-
-              <TextField
-                id="outlined-multiline-static"
-                label="掲示板の概要"
-                required
-                multiline
-                inputProps={{ maxLength: 400}}
-                fullWidth
-                rows={6}
-                {...control("description")}
-              /> */}
-
               <Button
                 type="submit"
                 variant="contained"
@@ -175,7 +127,7 @@ export default function post_keijiban() {
         </Box>
 
         <Snackbar
-          open={!open}
+          open={isSnackbarOpen}
           autoHideDuration={6000}
           message="掲示板を投稿しました"
         />
@@ -184,8 +136,9 @@ export default function post_keijiban() {
   );
 }
 
+post_keijiban.auth = true;
 export async function getStaticProps(context) {
   return {
-    props: {}, // will be passed to the page component as props
+    props: {},
   };
 }

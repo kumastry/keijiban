@@ -1,53 +1,40 @@
-import Head from "next/head";
-import Image from "next/image";
 import {
   getComments,
-  getCommentCount,
   getCommentUserId,
   getUserByUserId,
   getBoard,
   getfavorites,
   getfavoriteCount,
-  getCommentCountByBoardId
+  getCommentCountByBoardId,
 } from "../api/getDatabese";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
+
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Link from "next/link";
 import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { useState } from "react";
+import {Controller } from "react-hook-form";
 import axios from "axios";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { border } from "@mui/system";
-import getBoards from "../api/boards";
-import { PrismaClient } from "@prisma/client";
-import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import IconButton from "@mui/material/IconButton";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
-import Pagination from "@mui/material/Pagination";
+
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { MenuItem } from "@mui/material";
+import  MenuItem  from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
-import Grid from "@mui/material/Grid";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import { Fragment } from "react";
 import Stack from "@mui/system/Stack";
-import dayjs from "dayjs";
 import PostAddIcon from "@mui/icons-material/PostAdd";
+
+import useFormValidation from "./../../hooks/useFormValidation";
+import PaginationForKeijiban from "../../components/UIs/PaginationForKeijiban";
 
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -78,11 +65,14 @@ export default function board({
   page,
   commentUsers,
   board,
+  session,
+  status
 }) {
-  const { control, handleSubmit } = useForm({
-    defaultValues: { comment: "" },
+  const { control, handleSubmit, validationRules } = useFormValidation({
+    comment: "",
   });
-  const { data: session, status } = useSession();
+
+  //const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
   const [favState, setFavState] = useState(favorites);
@@ -97,15 +87,8 @@ export default function board({
   console.log(commentCount);
   console.log(Math.floor((commentCount + take - 1) / commentCount));
   */
-  const validationRules = {
-    comment: {
-      required: "コメントを入力してください。",
-      maxLength: { value: 600, message: "600文字以下で入力してください。" },
-      minLength: { value: 0, message: "コメントを入力してください" },
-    },
-  };
 
-  const handleChange = (e, page) => {
+  const handlePaginationChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
   };
 
@@ -138,8 +121,14 @@ export default function board({
     //ページ切り替えのときページ内リンクに飛ぶ
     //router.replace(`/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
     /* 近日実装　*/
-  
-    history.pushState(null, null, `/boards/${boardId}?page=${Math.ceil( ( commentCount + 1) / take)}#comment.${commentCount +1}`);
+
+    history.pushState(
+      null,
+      null,
+      `/boards/${boardId}?page=${Math.ceil(
+        (commentCount + 1) / take
+      )}#comment.${commentCount + 1}`
+    );
     router.reload();
   };
 
@@ -221,42 +210,40 @@ export default function board({
 
   return (
     <>
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box>
-          <Pagination
-            count={Math.floor((commentCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+      <PaginationForKeijiban
+        totalItemCount={commentCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
 
       <main className={styles.boardId}>
-        {commentCount < commentLimit || <h3 style={{color:"red", margin:5}}>※コメント数が上限に達しました</h3>}
-        <header style={{ margin: 10 }}>
+        {commentCount < commentLimit || (
+          <h3 style={{ color: "red", margin: 5 }}>
+            ※コメント数が上限に達しました
+          </h3>
+        )}
+        <div style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="h4">
             {board.title}
           </Typography>
-        </header>
+        </div>
 
-        <article style={{ margin: 10 }}>
+        <section style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="body1">
             {board.description}
           </Typography>
-        </article>
+        </section>
         <List>
           {comments.map((item, key) => {
             console.log(key);
-            console.log(`comment.${(key + 1)+(page-1)*take}`);
+            console.log(`comment.${key + 1 + (page - 1) * take}`);
             return (
-              <ListItem divider alignItems="flex-start" id = {`comment.${(key + 1)+(page-1)*take}`}>
+              <ListItem
+                divider
+                alignItems="flex-start"
+                id={`comment.${key + 1 + (page - 1) * take}`}
+              >
                 <ListItemAvatar>
                   <Avatar src={commentUsers[key].image} alt={"icon"} />
                 </ListItemAvatar>
@@ -268,8 +255,9 @@ export default function board({
                       variant="subtitle2"
                       color="text.secondary"
                     >
-                      {(key + 1)+(page-1)*take
-                       +
+                      {key +
+                        1 +
+                        (page - 1) * take +
                         ". " +
                         commentUsers[key].name +
                         " ID:" +
@@ -391,22 +379,12 @@ export default function board({
         </Modal>
       </main>
 
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box sx={{ m: 2 }}>
-          <Pagination
-            count={Math.floor((commentCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+      <PaginationForKeijiban
+        totalItemCount={commentCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
     </>
   );
 }
@@ -417,11 +395,7 @@ export async function getServerSideProps(context) {
   //console.log(page"page);
   const boardId = +context.params.boardId;
   console.log("serversideprops boradId");
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   console.log("sesson", session);
 
@@ -458,6 +432,7 @@ export async function getServerSideProps(context) {
     //getUserByUserId(userId),
   ]);
 
+  //N+1
   const commentUsers = await Promise.all(
     commentUserIds.map((element) => getUserByUserId(element.userId))
   );

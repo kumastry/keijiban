@@ -1,48 +1,48 @@
-import Head from "next/head";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
-import { useSession, signIn, signOut } from "next-auth/react";
 import { getBoards, getBoardCount } from "./api/boards";
-import { getBoard } from "./api/boards/[boardId]";
-import { PrismaClient } from "@prisma/client";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Link from "next/link";
+
+//MUIS 
 import Fab from "@mui/material/Fab";
 import Stack from "@mui/material/Stack";
-// prismaはフロントエンドで実行できない;
-//api routeを使うかgetserverprops内で使う
-import Header from "../components/Header";
-import Pagination from "@mui/material/Pagination";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { Grid, Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
-const newLineStyle = {
-  whiteSpace: "pre-wrap",
-  wordWrap: "break-word",
-};
+import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
+import KeijibanCard from "../components/KeijibanCard";
+import KeijibanHead from "./../components/KeijibanHead";
 
-export default function Home({ boards, boardCount, take, page }) {
-  const { data: session, status } = useSession();
+//初回表示遅いのでなんとかする
+// prismaはフロントエンドで実行できない;
+//api routeを使うかgetserverprops内で使う
+export default function Home({ boards, boardCount, take, page, status }) {
+  //画面がレンダリングされてから認証情報を取得するまでの遅延を解消する処理
+  //認証情報を取得するまでloadingする
+  //const { status } = useSession();
+
+  if (status === 'loading') {
+    return (<p>loading</p>);
+  }
+
   const router = useRouter();
 
+  /*
   console.log((boardCount + take - 1) / boardCount);
   console.log((boardCount + take - 1) / take);
-  const handleChange = (e, page) => {
+  */
+  //なんのhandleChange?
+  const handlePaginationChange = (event, page) => {
     router.push(`/?page=${page}`);
   };
 
-  console.log(status);
+  //console.log(status);
 
   return (
     <>
+      {/*SEOは外部に設置する*/}
+      {/*
       <Head>
         <title>kumastry keijiban</title>
         <meta name="description" content="本格的な掲示板　ただそれだけ" />
@@ -51,123 +51,91 @@ export default function Home({ boards, boardCount, take, page }) {
         <meta charset="utf-8" />
         <meta property="og:title" content="kumastry keijiban" />
         <meta property="og:site_name" content="kumastry keijiban" />
-        <meta property="og:description" content="本格的な掲示板　ただそれだけ" />
+        <meta
+          property="og:description"
+          content="本格的な掲示板　ただそれだけ"
+        />
         <meta property="og:url" content="%PUBLIC_URL%" />
         <meta property="og:type" content="website" />
-        {/*<meta property="og:image" content="%PUBLIC_URL%/images/ogp.png" /> */}
+        <meta property="og:image" content="%PUBLIC_URL%/images/ogp.png" />
         <meta name="twitter:card" content="summary_large_image" />
-      </Head>
+  </Head> */}
 
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box component="pagination" sx={{}}>
-          <Pagination
-            count={Math.floor((boardCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+      <KeijibanHead />
+      {/* ページネーション共通化できそう */}
+      <PaginationForKeijiban
+        totalItemCount={boardCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
 
       <main className={styles.main}>
         <Box sx={{ minWidth: "70%", maxWidth: "70%", margin: 5 }}>
           <Stack spacing={2}>
             {boards.map((board, key) => {
               return (
-                <Card>
-                  <CardContent>
-                    <Typography variant="h5" sx={newLineStyle}>
-                      {key + 1 + (page-1)*take}.{board.title}
-                    </Typography>
-
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      カテゴリー:{board.category}
-                    </Typography>
-
-                    <Typography variant="body1" sx={newLineStyle}>
-                      {board.description}
-                    </Typography>
-                  </CardContent>
-
-                  <CardActions
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      margin: 1,
-                    }}
-                  >
-                    <Link href={`/boards/${board.id}`}>
-                      <Button size="large">掲示板を見る</Button>
-                    </Link>
-                  </CardActions>
-                </Card>
+                <KeijibanCard
+                  number={key + 1 + (page - 1) * take}
+                  id={board.id}
+                  title={board.title}
+                  category={board.category}
+                  description={board.description}
+                />
               );
             })}
           </Stack>
         </Box>
       </main>
+
+      {/*改良の余地あり(位置)*/}
       {status !== "authenticated" || (
         <Link href={"/post_keijiban"}>
-        <Fab
-          variant="extended"
-          color="primary"
-          aria-label="add"
-          sx={{
-            margin: 5,
-            top: "auto",
-            right: 0,
-            bottom: 0,
-            left: "auto",
-            position: "fixed",
-          }}
-        >
-          <PostAddIcon/>
-          
-            
+          <Fab
+            variant="extended"
+            color="primary"
+            aria-label="add"
+            sx={{
+              margin: 10,
+              top: "auto",
+              right: 0,
+              bottom: 0,
+              left: "auto",
+              position: "fixed",
+            }}
+          >
+            <PostAddIcon />
             掲示板作成
-          
-        </Fab>
+          </Fab>
         </Link>
       )}
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
-        <Box component="pagination" sx={{}}>
-          <Pagination
-            count={Math.floor((boardCount + take - 1) / take)}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-            page={page}
-          />
-        </Box>
-      </Grid>
+
+      <PaginationForKeijiban
+        totalItemCount={boardCount}
+        take={take}
+        page={page}
+        handlePaginationChange={handlePaginationChange}
+      />
     </>
   );
 }
 
 export async function getServerSideProps({ params, query }) {
+  //この数字は定数とする
   const page = +query.page || 1;
   const take = 5;
-  console.log(params);
+  //console.log(params);
   //const boardId = +params.boardId;
-  console.log("query", query);
-  console.log(page);
-  const boards = await getBoards(take, (page - 1) * take);
-  const boardCount = await getBoardCount();
+  //console.log("query", query);
+  //console.log(page);
+  //並行処理
+  //const boards = await getBoards(take, (page - 1) * take);
+  //const boardCount = await getBoardCount();
+  const [boards, boardCount] = await Promise.all([getBoards(take, (page - 1) * take), getBoardCount()]);
   //const commentCount = await getCommentCount(boardId);
-  console.log(boards);
-  console.log(boardCount);
-  console.log("serversidepros");
+  //console.log(boards);
+  //console.log(boardCount);
+  //console.log("serversidepros");
   return {
     props: { boards, boardCount, take, page }, // will be passed to the page component as props
   };
