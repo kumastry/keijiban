@@ -29,10 +29,7 @@ import KeijibanCard from "../components/KeijibanCard";
 
 import KeijibanHead from "./../components/KeijibanHead";
 
-const newLineStyle = {
-  whiteSpace: "pre-wrap",
-  wordWrap: "break-word",
-};
+//初回表示遅いのでなんとかする
 
 export default function Home({ boards, boardCount, take, page, status }) {
   //画面がレンダリングされてから認証情報を取得するまでの遅延を解消する処理
@@ -148,8 +145,9 @@ export async function getServerSideProps({ params, query }) {
   //console.log("query", query);
   //console.log(page);
   //並行処理
-  const boards = await getBoards(take, (page - 1) * take);
-  const boardCount = await getBoardCount();
+  //const boards = await getBoards(take, (page - 1) * take);
+  //const boardCount = await getBoardCount();
+  const [boards, boardCount] = await Promise.all([getBoards(take, (page - 1) * take), getBoardCount()]);
   //const commentCount = await getCommentCount(boardId);
   //console.log(boards);
   //console.log(boardCount);
