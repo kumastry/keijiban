@@ -34,8 +34,15 @@ const newLineStyle = {
   wordWrap: "break-word",
 };
 
-export default function Home({ boards, boardCount, take, page }) {
-  const { status } = useSession();
+export default function Home({ boards, boardCount, take, page, status }) {
+  //画面がレンダリングされてから認証情報を取得するまでの遅延を解消する処理
+  //認証情報を取得するまでloadingする
+  //const { status } = useSession();
+
+  if (status === 'loading') {
+    return (<p>loading</p>);
+  }
+
   const router = useRouter();
 
   /*
@@ -100,6 +107,7 @@ export default function Home({ boards, boardCount, take, page }) {
       </main>
 
       {/*改良の余地あり*/}
+      {console.log(status)}
       {status !== "authenticated" || (
         <Link href={"/post_keijiban"}>
           <Fab

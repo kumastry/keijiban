@@ -5,6 +5,8 @@ import styles from "../styles/Home.module.css";
 import { Controller } from "react-hook-form";
 import useFormValidation from "../hooks/useFormValidation";
 import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 //MUI imports
 import Box from "@mui/material/Box";
@@ -36,27 +38,16 @@ import Stack from "@mui/material/Stack";
 //今は使わない、将来使うカモ
 //バリデーションは外に出そうね
 
-export default function post_keijiban() {
+export default function post_keijiban({session}) {
   //セッションがないとリダイレクトする必要がある
-  //const { data: session} = useSession();
-
+  
   const { control, handleSubmit, validationRules } = useFormValidation({
     title: "",
     category: "",
     description: "",
   });
-  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler();
+  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler({session});
 
-  /*const handleChange = () => {
-    if (inputRef.current) {
-      const ref = inputRef.current;
-      if (!ref.validity.valid) {
-        setInputError(true);
-      } else {
-        setInputError(false);
-      }
-    }
-  };*/
   return (
     <>
       <main className={styles.main}>
@@ -146,6 +137,7 @@ export default function post_keijiban() {
   );
 }
 
+post_keijiban.auth = true;
 export async function getStaticProps(context) {
   return {
     props: {},

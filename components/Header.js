@@ -9,9 +9,11 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Avatar from "@mui/material/Avatar";
 
-export default function Header() {
-  const { data: session, status } = useSession();
+export default function Header({session, status}) {
+  //sessionの情報は親要素から
+  
   //console.log(session);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

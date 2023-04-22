@@ -19,8 +19,10 @@ export default function profile({
   boardCountByUserId,
   commentCountByUserId,
   favoriteCountByUserId,
+  session,
+  status,
 }) {
-  const { data: session, status } = useSession();
+  //const { data: session, status } = useSession();
   //何がopen(変数名が抽象的すぎる)?
   const [open, setOpen] = useState(false);
 
@@ -81,6 +83,8 @@ export default function profile({
   );
 }
 
+profile.auth = true;
+
 export async function getServerSideProps(context) {
   //userIdのユーザーの掲示板投稿数，コメント投稿数，いいね数を表示する
   const session = await unstable_getServerSession(
@@ -89,7 +93,7 @@ export async function getServerSideProps(context) {
     authOptions
   );
 
-  const userId = session.user.id || "";
+  const userId = session?.user.id || "";
 
   const [boardCountByUserId, commentCountByUserId, favoriteCountByUserId] =
     await Promise.all([

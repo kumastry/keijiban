@@ -5,9 +5,9 @@ import { useSession } from "next-auth/react";
 
 //axiosによる通信も共通化した方が良い
 //try catchする必要がある
-const useCreateKeijibanHandler = () => {
+const useCreateKeijibanHandler = ({session}) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  //const { data: session } = useSession();
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const postKeijiban = async (data) => {
     //console.log(data);
@@ -17,6 +17,7 @@ const useCreateKeijibanHandler = () => {
     //console.log(description);
 
     setIsSnackbarOpen(!isSnackbarOpen);
+    //awaitする必要があるのか？
     await axios.post("api/boards", {
       title,
       category,

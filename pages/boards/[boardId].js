@@ -81,12 +81,14 @@ export default function board({
   page,
   commentUsers,
   board,
+  session,
+  status
 }) {
   const { control, handleSubmit, validationRules } = useFormValidation({
     comment: "",
   });
 
-  const { data: session, status } = useSession();
+  //const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
   const [favState, setFavState] = useState(favorites);
@@ -237,11 +239,11 @@ export default function board({
             ※コメント数が上限に達しました
           </h3>
         )}
-        <h1 style={{ margin: 10 }}>
+        <div style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="h4">
             {board.title}
           </Typography>
-        </h1>
+        </div>
 
         <section style={{ margin: 10 }}>
           <Typography color="text.primary" sx={newLineStyle} variant="body1">
