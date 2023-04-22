@@ -5,8 +5,6 @@ import styles from "../styles/Home.module.css";
 import { Controller } from "react-hook-form";
 import useFormValidation from "../hooks/useFormValidation";
 import useCreateKeijibanHandler from "../hooks/useCreateKeijibanHandler";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 //MUI imports
 import Box from "@mui/material/Box";
@@ -37,9 +35,10 @@ import Stack from "@mui/material/Stack";
 //使わないならコメントアウトしようね
 //今は使わない、将来使うカモ
 //バリデーションは外に出そうね
+//セッションがないとリダイレクトする必要がある
 
 export default function post_keijiban({session}) {
-  //セッションがないとリダイレクトする必要がある
+ 
   
   const { control, handleSubmit, validationRules } = useFormValidation({
     title: "",

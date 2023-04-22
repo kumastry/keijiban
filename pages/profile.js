@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";

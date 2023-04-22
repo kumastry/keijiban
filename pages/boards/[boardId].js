@@ -1,8 +1,5 @@
-import Head from "next/head";
-import Image from "next/image";
 import {
   getComments,
-  getCommentCount,
   getCommentUserId,
   getUserByUserId,
   getBoard,
@@ -10,25 +7,15 @@ import {
   getfavoriteCount,
   getCommentCountByBoardId,
 } from "../api/getDatabese";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
+
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Link from "next/link";
 import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { useState } from "react";
+import {Controller } from "react-hook-form";
 import axios from "axios";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { border } from "@mui/system";
-import getBoards from "../api/boards";
-import { PrismaClient } from "@prisma/client";
-import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -37,16 +24,13 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import IconButton from "@mui/material/IconButton";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
-import Pagination from "@mui/material/Pagination";
+
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { MenuItem } from "@mui/material";
+import  MenuItem  from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
-import Grid from "@mui/material/Grid";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import { Fragment } from "react";
 import Stack from "@mui/system/Stack";
-import dayjs from "dayjs";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 
 import useFormValidation from "./../../hooks/useFormValidation";

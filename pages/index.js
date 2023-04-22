@@ -1,36 +1,22 @@
-import Head from "next/head";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
-import { useSession, signIn, signOut } from "next-auth/react";
 import { getBoards, getBoardCount } from "./api/boards";
-import { getBoard } from "./api/boards/[boardId]";
-import { PrismaClient } from "@prisma/client";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Link from "next/link";
+
+//MUIS 
 import Fab from "@mui/material/Fab";
 import Stack from "@mui/material/Stack";
-// prismaはフロントエンドで実行できない;
-//api routeを使うかgetserverprops内で使う
-import Header from "../components/Header";
-import Pagination from "@mui/material/Pagination";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { Grid, Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 //import { getCommentCountByBoardId } from "./api/getDatabese";
 
 import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
 import KeijibanCard from "../components/KeijibanCard";
-
 import KeijibanHead from "./../components/KeijibanHead";
 
 //初回表示遅いのでなんとかする
-
+// prismaはフロントエンドで実行できない;
+//api routeを使うかgetserverprops内で使う
 export default function Home({ boards, boardCount, take, page, status }) {
   //画面がレンダリングされてから認証情報を取得するまでの遅延を解消する処理
   //認証情報を取得するまでloadingする
@@ -48,7 +34,6 @@ export default function Home({ boards, boardCount, take, page, status }) {
   */
   //なんのhandleChange?
   const handlePaginationChange = (event, page) => {
-    console.log("page", page);
     router.push(`/?page=${page}`);
   };
 
@@ -103,8 +88,7 @@ export default function Home({ boards, boardCount, take, page, status }) {
         </Box>
       </main>
 
-      {/*改良の余地あり*/}
-      {console.log(status)}
+      {/*改良の余地あり(位置)*/}
       {status !== "authenticated" || (
         <Link href={"/post_keijiban"}>
           <Fab

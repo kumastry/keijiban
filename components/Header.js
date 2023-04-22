@@ -4,10 +4,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Avatar from "@mui/material/Avatar";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import Avatar from "@mui/material/Avatar";
+
 
 export default function Header({session, status}) {
   //sessionの情報は親要素から
