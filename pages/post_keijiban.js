@@ -86,7 +86,7 @@ export default function post_keijiban({session}) {
                     style={{ width: "35%" }}
                     error={fieldState.invalid}
                   >
-                    {/*ここ繰り返さない 抽象化できる*/}
+                    {/*ここ繰り返さない抽象化できる 最終的に管理者が追加できるようにする*/}
                     <MenuItem value="ニュース">ニュース</MenuItem>
                     <MenuItem value="日常">日常</MenuItem>
                     <MenuItem value="学習">学習</MenuItem>
@@ -122,6 +122,7 @@ export default function post_keijiban({session}) {
               >
                 掲示板を投稿
               </Button>
+              
             </Stack>
           </form>
         </Box>

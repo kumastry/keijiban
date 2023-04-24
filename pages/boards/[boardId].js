@@ -36,9 +36,6 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import useFormValidation from "./../../hooks/useFormValidation";
 import PaginationForKeijiban from "../../components/UIs/PaginationForKeijiban";
 
-// prismaはフロントエンドで実行できない;
-//api routeを使うかgetserverprops内で使う
-// api/boards/boardId/comments
 const style = {
   position: "absolute",
   top: "50%",
@@ -72,56 +69,23 @@ export default function board({
     comment: "",
   });
 
-  //const { data: session, status } = useSession();
   const router = useRouter();
   const [favCnt, setFavCnt] = useState(favoriteCount);
   const [favState, setFavState] = useState(favorites);
-  const [openReportModal, setOpenReportModal] = useState(false);
+
   const { boardId } = router.query;
   const commentLimit = 500;
-  /*
-  console.log(router);
-  console.log(commentUsers);
-  console.log("UEUEEU")
-  console.log(take);
-  console.log(commentCount);
-  console.log(Math.floor((commentCount + take - 1) / commentCount));
-  */
 
   const handlePaginationChange = (e, page) => {
     router.push(`/boards/${boardId}?page=${page}`);
   };
 
-  /*
-  const [favoriteState, SetfavoriteState] = useState(() => {
-    const st = new Set();
-    console.log(comments, favorites)
-    for(const comment of comments) {
-      for(const favorite of favorites) {
-        console.log(comment, favorite)
-        if(comment.id === favorite.commentId) {
-          console.log("puttar");
-          st.add(comment.id);
-        }
-      }
-    }
-    console.log(st);
-    return st;
-  });*/
-
-  const onSubmit = async (data) => {
-    console.log(session);
-    console.log(boardId);
-    console.log(data);
+  const onCommentSubmit = async (data) => {
     await axios.post("../../api/boards/[boardId]/comments", {
       comment: data.comment,
       userId: session.user.id,
       boardId,
     });
-    //ページ切り替えのときページ内リンクに飛ぶ
-    //router.replace(`/boards/${boardId}?page=${page}#comment.${commentCount+1}`);
-    /* 近日実装　*/
-
     history.pushState(
       null,
       null,
@@ -150,8 +114,6 @@ export default function board({
     setFavCnt((prev) => {
       const next = new Map(prev);
       const cnt = favCnt.get(String(commentId));
-      console.log(prev);
-      console.log(next);
       if (cnt === undefined) {
         next.set(String(commentId), String(1));
       } else {
@@ -161,7 +123,6 @@ export default function board({
       console.log(next);
       return next;
     });
-    //favを
   };
 
   const deletefavorite = (commentId) => {
@@ -174,10 +135,7 @@ export default function board({
 
     setFavState((prev) => {
       let next = [...prev];
-      console.log(commentId);
-      console.log(prev, next);
       next = next.filter((element) => element.commentId !== commentId);
-      console.log(prev, next);
       return next;
     });
 
@@ -304,7 +262,7 @@ export default function board({
         </List>
 
         {status === "unauthenticated" || commentCount >= commentLimit || (
-          <form method="post" onSubmit={handleSubmit(onSubmit)}>
+          <form method="post" onSubmit={handleSubmit(onCommentSubmit)}>
             <Box sx={{ m: 2 }}>
               {/*<TextField
                 fullWidth
@@ -347,36 +305,9 @@ export default function board({
                 投稿
               </Button>
             </Box>
+            
           </form>
         )}
-
-        <Modal
-          open={openReportModal}
-          onClose={() => setOpenReportModal}
-          aria-labelledby="report modal"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              通報フォーム {/*近日実装*/}
-            </Typography>
-
-            <form>
-              <TextField
-                id="standard-select-currency"
-                select
-                label="カテゴリー"
-                helperText="カテゴリーを選択"
-                variant="standard"
-                style={{ width: "30%" }}
-              >
-                <MenuItem value="aaa">あああ</MenuItem>
-                <MenuItem value="aaa">あああ</MenuItem>
-                <MenuItem value="aaa">あああ</MenuItem>
-                <MenuItem value="aaa">あああ</MenuItem>
-              </TextField>
-            </form>
-          </Box>
-        </Modal>
       </main>
 
       <PaginationForKeijiban
