@@ -2,11 +2,20 @@ import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import Layout from "../components/Layout";
 import { useSession } from "next-auth/react";
+import NProgress from 'nprogress';
+import Router from "next/router";
+import '../styles/nprogress.css'
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+
+
+    Router.events.on('routeChangeStart', () =>  NProgress.start());
+    Router.events.on('routeChangeComplete', () =>  NProgress.done());
+    Router.events.on('routeChangeError', () =>  NProgress.done());
+
   return (
     <SessionProvider session={session}>
      
