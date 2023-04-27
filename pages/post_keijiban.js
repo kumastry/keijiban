@@ -37,15 +37,15 @@ import Stack from "@mui/material/Stack";
 //バリデーションは外に出そうね
 //セッションがないとリダイレクトする必要がある
 
-export default function post_keijiban({session}) {
- 
-  
+export default function post_keijiban({ session }) {
   const { control, handleSubmit, validationRules } = useFormValidation({
     title: "",
     category: "",
     description: "",
   });
-  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler({session});
+  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler({
+    session,
+  });
 
   return (
     <>
@@ -86,7 +86,7 @@ export default function post_keijiban({session}) {
                     style={{ width: "35%" }}
                     error={fieldState.invalid}
                   >
-                    {/*ここ繰り返さない 抽象化できる*/}
+                    {/*ここ繰り返さない抽象化できる 最終的に管理者が追加できるようにする*/}
                     <MenuItem value="ニュース">ニュース</MenuItem>
                     <MenuItem value="日常">日常</MenuItem>
                     <MenuItem value="学習">学習</MenuItem>
