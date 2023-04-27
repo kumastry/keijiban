@@ -8,10 +8,9 @@ import Avatar from "@mui/material/Avatar";
 
 import Link from "next/link";
 
-
-export default function Header({session, status}) {
+export default function Header({ session, status }) {
   //sessionの情報は親要素から
-  
+
   //console.log(session);
 
   return (

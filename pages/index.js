@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 import { getBoards, getBoardCount } from "./api/boards";
 import Link from "next/link";
 
-//MUIS 
+//MUIS
 import Fab from "@mui/material/Fab";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
@@ -22,8 +22,8 @@ export default function Home({ boards, boardCount, take, page, status }) {
   //認証情報を取得するまでloadingする
   //const { status } = useSession();
 
-  if (status === 'loading') {
-    return (<p>loading</p>);
+  if (status === "loading") {
+    return <p>loading</p>;
   }
 
   const router = useRouter();
@@ -131,7 +131,10 @@ export async function getServerSideProps({ params, query }) {
   //並行処理
   //const boards = await getBoards(take, (page - 1) * take);
   //const boardCount = await getBoardCount();
-  const [boards, boardCount] = await Promise.all([getBoards(take, (page - 1) * take), getBoardCount()]);
+  const [boards, boardCount] = await Promise.all([
+    getBoards(take, (page - 1) * take),
+    getBoardCount(),
+  ]);
   //const commentCount = await getCommentCount(boardId);
   //console.log(boards);
   //console.log(boardCount);

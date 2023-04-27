@@ -14,7 +14,7 @@ import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import {Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import axios from "axios";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -27,7 +27,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import  MenuItem  from "@mui/material/MenuItem";
+import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Stack from "@mui/system/Stack";
@@ -63,7 +63,7 @@ export default function board({
   commentUsers,
   board,
   session,
-  status
+  status,
 }) {
   const { control, handleSubmit, validationRules } = useFormValidation({
     comment: "",
@@ -305,7 +305,6 @@ export default function board({
                 投稿
               </Button>
             </Box>
-            
           </form>
         )}
       </main>

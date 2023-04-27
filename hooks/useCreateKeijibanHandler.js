@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 
 //axiosによる通信も共通化した方が良い
 //try catchする必要がある
-const useCreateKeijibanHandler = ({session}) => {
+const useCreateKeijibanHandler = ({ session }) => {
   const router = useRouter();
   //const { data: session } = useSession();
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);

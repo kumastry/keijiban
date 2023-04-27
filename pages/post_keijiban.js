@@ -37,15 +37,15 @@ import Stack from "@mui/material/Stack";
 //バリデーションは外に出そうね
 //セッションがないとリダイレクトする必要がある
 
-export default function post_keijiban({session}) {
- 
-  
+export default function post_keijiban({ session }) {
   const { control, handleSubmit, validationRules } = useFormValidation({
     title: "",
     category: "",
     description: "",
   });
-  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler({session});
+  const { postKeijiban, isSnackbarOpen } = useCreateKeijibanHandler({
+    session,
+  });
 
   return (
     <>
@@ -122,7 +122,6 @@ export default function post_keijiban({session}) {
               >
                 掲示板を投稿
               </Button>
-              
             </Stack>
           </form>
         </Box>
