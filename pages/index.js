@@ -23,24 +23,29 @@ import KeijibanHead from "./../components/KeijibanHead";
   //画面がレンダリングされてから認証情報を取得するまでの遅延を解消する処理
   //認証情報を取得するまでloadingする
   //const { status } = useSession();
-export default function Home({fallback, status, page, take}) {
+/*時間計算する */
+export default function Home({ status}) {
+  const router = useRouter();
+  const page = +router.query.page;
+  const take = 5;
   return (
     <SWRConfig value={{ 
-        fallback, 
         refreshInterval: 1000,
         fetcher: (...arg) => fetch(...arg).then(res => res.json())
       }}>
-
+      
       <HomeContent status = {status} page = {page} take = {take} />
+      <div style={{display:"none"}}><HomeContent status = {status} page = {page+1} take = {take} /></div>
     </SWRConfig>
   )
 }
 
 //jotaiかrecoilを使う
 const HomeContent = ({status, page, take}) => {
-  const {data:boards} = useSWR('/api/boards');
+  const {data:boards} = useSWR(`/api/boards?offset=${(page - 1) * take}&limit=${take}`);
   const {data:boardCount} = useSWR('/api/boards/board-count');
   console.log("board count: " + boardCount);
+  console.log(boards)
   console.log("page", page);
   console.log("take", take);
   if (status === "loading") {
@@ -94,7 +99,7 @@ const HomeContent = ({status, page, take}) => {
       <main className={styles.main}>
         <Box sx={{ minWidth: "70%", maxWidth: "70%", margin: 5 }}>
           <Stack spacing={2}>
-            {boards.map((board, key) => {
+            {boards?.map((board, key) => {
               return (
                 <KeijibanCard
                   number={key + 1 + (page - 1) * take}
@@ -141,8 +146,8 @@ const HomeContent = ({status, page, take}) => {
   );
 }
 
-export async function getServerSideProps({ params, query }) {
-
+/*export async function getServerSideProps({ params, query }) {
+  console.log(query.page);
   const page = +query.page || 1;
   const take = 10;
   
@@ -151,14 +156,24 @@ export async function getServerSideProps({ params, query }) {
     getBoardCount(),
   ]);
 
+  //console.log(boards);
+
   return {
     props: {
       page, take,
       fallback: {
-        '/api/boards':boards,
+        '/api/boards/':boards,
         '/api/boards/board-count':boardCount
       }
     }
   }
 
-}
+}*/
+
+/*export async function getServerSideProps({ params, query }) {
+  return {
+    props: {
+
+    }
+  }
+}*/
