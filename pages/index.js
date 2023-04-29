@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { SWRConfig} from "swr";
 import useSWR from "swr";
+import { useState } from "react";
 
 //MUIS
 import Fab from "@mui/material/Fab";
@@ -16,6 +17,7 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
 import KeijibanCard from "../components/KeijibanCard";
 import KeijibanHead from "./../components/KeijibanHead";
+import { use } from "react";
 
 //初回表示遅いのでなんとかする
 // prismaはフロントエンドで実行できない;
@@ -24,26 +26,36 @@ import KeijibanHead from "./../components/KeijibanHead";
   //認証情報を取得するまでloadingする
   //const { status } = useSession();
 /*時間計算する */
-export default function Home({ status}) {
+export default function Home({status, boards, boardCount, pageForFetch }) {
   const router = useRouter();
-  const page = +router.query.page;
+  const page = +router.query.page || 1;
+  const [newPage, setNewPage] = useState(page);
+
+  console.log(pageForFetch, page);
+  const isInit = pageForFetch === page;
+  console.log(isInit);
+  console.log("HOME", boards);
   const take = 5;
   return (
     <SWRConfig value={{ 
         refreshInterval: 1000,
         fetcher: (...arg) => fetch(...arg).then(res => res.json())
       }}>
-      
-      <HomeContent status = {status} page = {page} take = {take} />
-      <div style={{display:"none"}}><HomeContent status = {status} page = {page+1} take = {take} /></div>
+      <HomeContent status = {status} page = {newPage} take = {take} setNewPage = {setNewPage} Initboards= {boards} InitboardCount = {boardCount}   pageForFetch = {pageForFetch}/>
+      <div style={{display:"none"}}><HomeContent status = {status} page = {newPage+1} take = {take} setNewPage = {setNewPage} pageForFetch = {pageForFetch}/></div>
+      <div style={{display:"none"}}><HomeContent status = {status} page = {newPage-1} take = {take} setNewPage = {setNewPage} pageForFetch = {pageForFetch}/></div>
     </SWRConfig>
   )
 }
 
 //jotaiかrecoilを使う
-const HomeContent = ({status, page, take}) => {
-  const {data:boards} = useSWR(`/api/boards?offset=${(page - 1) * take}&limit=${take}`);
-  const {data:boardCount} = useSWR('/api/boards/board-count');
+const HomeContent = ({status, page, take, setNewPage,Initboards, InitboardCount, pageForFetch }) => {
+  console.log("UHOOOOOO",isInit, page)
+  const isInit = pageForFetch === page;
+  const {data:boards, isLoading} = useSWR(`/api/boards?offset=${(page - 1) * take}&limit=${take}`, {fallbackData : isInit?Initboards:[],  revalidateOnMount: true,});
+
+
+  const {data:boardCount} = useSWR('/api/boards/board-count', { fallbackData : InitboardCount,  revalidateOnMount: true,});
   console.log("board count: " + boardCount);
   console.log(boards)
   console.log("page", page);
@@ -53,14 +65,14 @@ const HomeContent = ({status, page, take}) => {
   }
 
   const router = useRouter();
-
   /*
   console.log((boardCount + take - 1) / boardCount);
   console.log((boardCount + take - 1) / take);
   */
   //なんのhandleChange?
   const handlePaginationChange = (event, page) => {
-    router.push(`/?page=${page}`);
+    //router.push(`/?page=${page}`);
+    setNewPage(page);
   };
 
   //console.log(status);
@@ -170,10 +182,18 @@ const HomeContent = ({status, page, take}) => {
 
 }*/
 
-/*export async function getServerSideProps({ params, query }) {
+export async function getServerSideProps({ params, query }) {
+  const pageForFetch = +query.page || 1;
+  const take = 5;
+  
+  const [boards, boardCount] = await Promise.all([
+    getBoards(take, (pageForFetch  - 1) * take),
+    getBoardCount(),
+  ]);
+
   return {
     props: {
-
+      boards, boardCount, pageForFetch 
     }
   }
-}*/
+}
