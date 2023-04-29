@@ -25,9 +25,7 @@ import IconButton from "@mui/material/IconButton";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 
-import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Stack from "@mui/system/Stack";
@@ -322,28 +320,9 @@ export default function board({
 export async function getServerSideProps(context) {
   const page = +context.query.page || 1;
   const take = 50;
-  //console.log(page"page);
   const boardId = +context.params.boardId;
-  console.log("serversideprops boradId");
   const session = await getServerSession(context.req, context.res, authOptions);
-
-  console.log("sesson", session);
-
   const userId = session !== null ? session.user.id : undefined;
-
-  //commentテーブルからあるboardIdのレコード抽出
-  //const comments = await getComments(boardId, take, (page-1)*take);
-  //const commentCount = await getCommentCount();
-
-  //favoriteテーブルからあるboardIdのレコードを抽出
-  //const favorites = await getfavorites(boardId,session);
-
-  //あるcommentIdのレコード数をカウント
-  //const fav = await getfavoriteCount();
-
-  //概要を作成
-  //const description = await getDes
-
   const [
     comments,
     commentCount,

@@ -30,6 +30,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.0",
     "react-hook-form-mui": "^5.13.1",
+    "react-intersection-observer": "^9.4.3",
     "request-ip": "^3.3.0",
     "superjson": "^1.12.2",
     "swc": "^1.0.11",
