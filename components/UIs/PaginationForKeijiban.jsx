@@ -8,10 +8,6 @@ const PaginationForKeijiban = ({
   page,
   handlePaginationChange,
 }) => {
-  console.log(totalItemCount);
-  console.log(take);
-  console.log(page);
-  console.log(handlePaginationChange);
   return (
     <Grid
       container

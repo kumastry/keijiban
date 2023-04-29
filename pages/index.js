@@ -3,6 +3,9 @@ import styles from "../styles/Home.module.css";
 import { getBoards, getBoardCount } from "./api/boards";
 import Link from "next/link";
 
+import { SWRConfig} from "swr";
+import useSWR from "swr";
+
 //MUIS
 import Fab from "@mui/material/Fab";
 import Stack from "@mui/material/Stack";
@@ -17,11 +20,29 @@ import KeijibanHead from "./../components/KeijibanHead";
 //初回表示遅いのでなんとかする
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
-export default function Home({ boards, boardCount, take, page, status }) {
   //画面がレンダリングされてから認証情報を取得するまでの遅延を解消する処理
   //認証情報を取得するまでloadingする
   //const { status } = useSession();
+export default function Home({fallback, status, page, take}) {
+  return (
+    <SWRConfig value={{ 
+        fallback, 
+        refreshInterval: 1000,
+        fetcher: (...arg) => fetch(...arg).then(res => res.json())
+      }}>
 
+      <HomeContent status = {status} page = {page} take = {take} />
+    </SWRConfig>
+  )
+}
+
+//jotaiかrecoilを使う
+const HomeContent = ({status, page, take}) => {
+  const {data:boards} = useSWR('/api/boards');
+  const {data:boardCount} = useSWR('/api/boards/board-count');
+  console.log("board count: " + boardCount);
+  console.log("page", page);
+  console.log("take", take);
   if (status === "loading") {
     return <p>loading</p>;
   }
@@ -121,25 +142,23 @@ export default function Home({ boards, boardCount, take, page, status }) {
 }
 
 export async function getServerSideProps({ params, query }) {
-  //この数字は定数とする
+
   const page = +query.page || 1;
-  const take = 5;
-  //console.log(params);
-  //const boardId = +params.boardId;
-  //console.log("query", query);
-  //console.log(page);
-  //並行処理
-  //const boards = await getBoards(take, (page - 1) * take);
-  //const boardCount = await getBoardCount();
+  const take = 10;
+  
   const [boards, boardCount] = await Promise.all([
     getBoards(take, (page - 1) * take),
     getBoardCount(),
   ]);
-  //const commentCount = await getCommentCount(boardId);
-  //console.log(boards);
-  //console.log(boardCount);
-  //console.log("serversidepros");
+
   return {
-    props: { boards, boardCount, take, page }, // will be passed to the page component as props
-  };
+    props: {
+      page, take,
+      fallback: {
+        '/api/boards':boards,
+        '/api/boards/board-count':boardCount
+      }
+    }
+  }
+
 }
