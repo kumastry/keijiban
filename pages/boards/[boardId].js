@@ -34,17 +34,9 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import useFormValidation from "./../../hooks/useFormValidation";
 import PaginationForKeijiban from "../../components/UIs/PaginationForKeijiban";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+//swr
+import useSWR, { SWRConfig } from "swr";
+import fetcher from "../../utils/fetcher";
 
 const newLineStyle = {
   whiteSpace: "pre-wrap",
@@ -63,6 +55,41 @@ export default function board({
   session,
   status,
 }) {
+  return (
+    <SWRConfig
+      value={{
+        refreshInterval: 1000,
+        fetcher,
+      }}
+    >
+      <BoardContent
+        comments={comments}
+        favorites={favorites}
+        favoriteCount={favoriteCount}
+        commentCount={commentCount}
+        take={take}
+        page={page}
+        commentUsers={commentUsers}
+        board={board}
+        session={session}
+        status={status}
+      />
+    </SWRConfig>
+  );
+}
+
+const BoardContent = ({
+  comments,
+  favorites,
+  favoriteCount,
+  commentCount,
+  take,
+  page,
+  commentUsers,
+  board,
+  session,
+  status,
+}) => {
   const { control, handleSubmit, validationRules } = useFormValidation({
     comment: "",
   });
@@ -315,7 +342,7 @@ export default function board({
       />
     </>
   );
-}
+};
 
 export async function getServerSideProps(context) {
   const page = +context.query.page || 1;
