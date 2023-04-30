@@ -1,16 +1,23 @@
 import { PrismaClient } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../auth/[...nextauth]";
+import {getComments} from "./../../../getDatabese";
 
 //コメントを投稿
 // POST
 // comment, boardId, authorIdが必須
 // GETはクエリが必要
 
+//コメントの取得
+
 export default async function handler(req, res) {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  console.log("OMOOMOMM");
+  //const session = await getServerSession(req, res, authOptions);
+  /*if(!session) {
+    return res.status(403).send("forbidden");
+  }*/
   const prisma = new PrismaClient();
-  if (session) {
+
     if (req.method === "POST") {
       const comment = req.body.comment;
       const userId = req.body.userId;
@@ -22,17 +29,26 @@ export default async function handler(req, res) {
           userId,
         },
       });
-      res.json(result);
-    } else if (req.method === "GET") {
-      const boardId = +req.query.id;
-      const comments = await prisma.comment.findMany({
-        where: {
-          boardId,
-        },
-      });
-      res.json(comments);
+
+      if(!result) {
+        return res.status("404").send("Not Found");
+      }
+
+      return res.json(result);
+    } 
+    
+    if (req.method === "GET") {
+      console.log("MEMEMETO")
+      console.log(req.boardId);
+      console.log("FD")
+      //const boardId = +req.params.boardId;
+      const limit = +req.query.limit || 50;
+      const offset = +req.query.offset || 0;
+      try {
+        const comments = await getComments(boardId, limit, offset);
+        return res.json(comments);
+      } catch (error) {
+        return res.status(500).send(error);
+      }
     }
-  } else {
-    res.status(403).send("forbidden");
-  }
 }
