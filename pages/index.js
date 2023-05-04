@@ -6,7 +6,6 @@ import Link from "next/link";
 import { SWRConfig } from "swr";
 import useSWR from "swr";
 import { useState } from "react";
-
 import { fetcher } from "../utils/fetcher";
 
 
@@ -21,6 +20,10 @@ import PaginationForKeijiban from "../components/UIs/PaginationForKeijiban";
 import KeijibanCard from "../components/KeijibanCard";
 import KeijibanHead from "./../components/KeijibanHead";
 
+//recoil
+import { statusState } from "../components/states/statusState";
+import { useRecoilValue } from "recoil";
+
 //初回表示遅いのでなんとかする
 // prismaはフロントエンドで実行できない;
 //api routeを使うかgetserverprops内で使う
@@ -28,10 +31,12 @@ import KeijibanHead from "./../components/KeijibanHead";
 //認証情報を取得するまでloadingする
 //const { status } = useSession();
 /*時間計算する */
-export default function Home({ status, boards, boardCount, pageForFetch }) {
+export default function Home({ boards, boardCount, pageForFetch }) {
   const router = useRouter();
   const page = +router.query.page || 1;
   const [newPage, setNewPage] = useState(page);
+
+
 
   console.log(pageForFetch, page);
   const isInit = pageForFetch === page;
@@ -44,7 +49,7 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
       }}
     >
       <HomeContent
-        status={status}
+
         page={newPage}
         take={take}
         setNewPage={setNewPage}
@@ -55,7 +60,7 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
 
 <div style={{ display: "none" }}>
         <HomeContent
-          status={status}
+
           page={newPage + 1}
           take={take}
           setNewPage={setNewPage}
@@ -64,7 +69,7 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
       </div>
       <div style={{ display: "none" }}>
         <HomeContent
-          status={status}
+
           page={newPage - 1}
           take={take}
           setNewPage={setNewPage}
@@ -78,7 +83,6 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
 
 //jotaiかrecoilを使う
 const HomeContent = ({
-  status,
   page,
   take,
   setNewPage,
@@ -86,6 +90,8 @@ const HomeContent = ({
   InitboardCount,
   pageForFetch,
 }) => {
+
+  const status = useRecoilValue(statusState);
   const isInit = pageForFetch === page;
   const { data: boards, isLoading } = useSWR(
     `/api/boards?offset=${(page - 1) * take}&limit=${take}`,
