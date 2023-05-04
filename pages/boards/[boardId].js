@@ -38,6 +38,10 @@ import PaginationForKeijiban from "../../components/UIs/PaginationForKeijiban";
 import useSWR, { SWRConfig } from "swr";
 import fetcher from "../../utils/fetcher";
 
+import { useRecoilValue } from "recoil";
+import { sessionState } from "../../components/states/sessionState";
+import { statusState } from "../../components/states/statusState";
+
 const newLineStyle = {
   whiteSpace: "pre-wrap",
   wordWrap: "break-word",
@@ -51,9 +55,7 @@ export default function board({
   take,
   page,
   commentUsers,
-  board,
-  session,
-  status,
+  board
 }) {
   return (
     <SWRConfig
@@ -71,8 +73,6 @@ export default function board({
         page={page}
         commentUsers={commentUsers}
         board={board}
-        session={session}
-        status={status}
       />
     </SWRConfig>
   );
@@ -87,9 +87,11 @@ const BoardContent = ({
   page,
   commentUsers,
   board,
-  session,
-  status,
 }) => {
+
+  const session = useRecoilValue(sessionState);
+  const status = useRecoilValue(statusState);
+
   const { control, handleSubmit, validationRules } = useFormValidation({
     comment: "",
   });

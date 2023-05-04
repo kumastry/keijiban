@@ -198,30 +198,6 @@ const HomeContent = ({
   );
 };
 
-/*export async function getServerSideProps({ params, query }) {
-  console.log(query.page);
-  const page = +query.page || 1;
-  const take = 10;
-
-  const [boards, boardCount] = await Promise.all([
-    getBoards(take, (page - 1) * take),
-    getBoardCount(),
-  ]);
-
-  //console.log(boards);
-
-  return {
-    props: {
-      page, take,
-      fallback: {
-        '/api/boards/':boards,
-        '/api/boards/board-count':boardCount
-      }
-    }
-  }
-
-}*/
-
 export async function getServerSideProps({ params, query }) {
   const pageForFetch = +query.page || 1;
   const take = 5;

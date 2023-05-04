@@ -15,6 +15,8 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
 
+import { useRecoilValue } from "recoil";
+import { sessionState } from "../components/states/sessionState";
 //TODO:リファクタリング
 //- ビューとロジックを分ける
 //- 変数名を考える　→　具体的な処理の変数名
@@ -37,7 +39,9 @@ import Stack from "@mui/material/Stack";
 //バリデーションは外に出そうね
 //セッションがないとリダイレクトする必要がある
 
-export default function post_keijiban({ session }) {
+export default function post_keijiban() {
+
+  const session = useRecoilValue(sessionState);
   const { control, handleSubmit, validationRules } = useFormValidation({
     title: "",
     category: "",
@@ -136,7 +140,9 @@ export default function post_keijiban({ session }) {
   );
 }
 
+//保護ページにONにする
 post_keijiban.auth = true;
+
 export async function getStaticProps(context) {
   return {
     props: {},

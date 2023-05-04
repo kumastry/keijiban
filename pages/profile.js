@@ -6,7 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]";
 import {
   getBoardCountByUserId,
@@ -14,14 +14,19 @@ import {
   getFavoriteCountByUserId,
 } from "./api/getDatabese";
 
+import { useRecoilValue } from "recoil";
+import { statusState } from "../components/states/statusState";
+import { sessionState } from "../components/states/sessionState";
+
 export default function profile({
   boardCountByUserId,
   commentCountByUserId,
   favoriteCountByUserId,
-  session,
-  status,
 }) {
   //const { data: session, status } = useSession();
+  const status = useRecoilValue(statusState);
+  const session = useRecoilValue(sessionState);
+
   //何がopen(変数名が抽象的すぎる)?
   const [open, setOpen] = useState(false);
 
@@ -86,7 +91,7 @@ profile.auth = true;
 
 export async function getServerSideProps(context) {
   //userIdのユーザーの掲示板投稿数，コメント投稿数，いいね数を表示する
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions
