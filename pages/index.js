@@ -36,7 +36,7 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
   console.log(pageForFetch, page);
   const isInit = pageForFetch === page;
   console.log(isInit);
-  console.log("HOME", boards);
+  console.log("HOME render", boards);
   const take = 5;
   return (
     <SWRConfig
@@ -54,7 +54,8 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
         InitboardCount={boardCount}
         pageForFetch={pageForFetch}
       />
-      <div style={{ display: "none" }}>
+
+<div style={{ display: "none" }}>
         <HomeContent
           status={status}
           page={newPage + 1}
@@ -72,6 +73,7 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
           pageForFetch={pageForFetch}
         />
       </div>
+
     </SWRConfig>
   );
 }
@@ -93,10 +95,15 @@ const HomeContent = ({
     { fallbackData: isInit ? Initboards : [], revalidateOnMount: true }
   );
 
+  const [renderEvent, setRenderEvent] = useState(false);
+
+  console.log("page", page);
+
   const { data: boardCount } = useSWR("/api/boards/board-count", {
     fallbackData: InitboardCount,
     revalidateOnMount: true,
   });
+
   console.log("board count: " + boardCount);
   console.log(boards);
   console.log("page", page);
@@ -105,14 +112,22 @@ const HomeContent = ({
     return <p>loading</p>;
   }
 
-  const router = useRouter();
+  //const router = useRouter();
   /*
   console.log((boardCount + take - 1) / boardCount);
   console.log((boardCount + take - 1) / take);
   */
   //なんのhandleChange?
+
+  window.addEventListener('popstate', (event) => {
+
+  });
+
+
   const handlePaginationChange = (event, page) => {
-    //router.push(`/?page=${page}`);
+    const url = new URL(window.location);
+    url.searchParams.set('page', page);
+    window.history.pushState({}, '', url);
     setNewPage(page);
   };
 
@@ -120,25 +135,6 @@ const HomeContent = ({
 
   return (
     <>
-      {/*SEOは外部に設置する*/}
-      {/*
-      <Head>
-        <title>kumastry keijiban</title>
-        <meta name="description" content="本格的な掲示板　ただそれだけ" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta charset="utf-8" />
-        <meta property="og:title" content="kumastry keijiban" />
-        <meta property="og:site_name" content="kumastry keijiban" />
-        <meta
-          property="og:description"
-          content="本格的な掲示板　ただそれだけ"
-        />
-        <meta property="og:url" content="%PUBLIC_URL%" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="%PUBLIC_URL%/images/ogp.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-  </Head> */}
 
       <KeijibanHead />
       {/* ページネーション共通化できそう */}
