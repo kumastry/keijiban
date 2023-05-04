@@ -38,7 +38,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
+
     const boardId = +req.params.boardId;
+
+    console.log("MEMEMETO");
+    console.log(req.boardId);
+    console.log("FD");
+    //const boardId = +req.params.boardId;
+
     const limit = +req.query.limit || 50;
     const offset = +req.query.offset || 0;
     try {

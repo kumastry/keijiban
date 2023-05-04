@@ -6,7 +6,9 @@ import Link from "next/link";
 import { SWRConfig } from "swr";
 import useSWR from "swr";
 import { useState } from "react";
-import fetcher from "./../utils/fetcher"
+
+import { fetcher } from "../utils/fetcher";
+
 
 //MUIS
 import Fab from "@mui/material/Fab";
@@ -201,7 +203,7 @@ const HomeContent = ({
   console.log(query.page);
   const page = +query.page || 1;
   const take = 10;
-  
+
   const [boards, boardCount] = await Promise.all([
     getBoards(take, (page - 1) * take),
     getBoardCount(),
