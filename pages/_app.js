@@ -6,6 +6,10 @@ import NProgress from "nprogress";
 import Router from "next/router";
 import "../styles/nprogress.css";
 
+import {
+  RecoilRoot,
+} from 'recoil';
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -15,6 +19,7 @@ export default function App({
   Router.events.on("routeChangeError", () => NProgress.done());
 
   return (
+    <RecoilRoot>
     <SessionProvider session={session}>
       {Component.auth ? (
         /*保護ページ*/
@@ -30,6 +35,7 @@ export default function App({
         </Layout>
       )}
     </SessionProvider>
+    </RecoilRoot>
   );
 }
 

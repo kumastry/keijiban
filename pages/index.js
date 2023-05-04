@@ -35,8 +35,6 @@ export default function Home({ status, boards, boardCount, pageForFetch }) {
 
   console.log(pageForFetch, page);
   const isInit = pageForFetch === page;
-  console.log(isInit);
-  console.log("HOME render", boards);
   const take = 5;
   return (
     <SWRConfig
@@ -88,7 +86,6 @@ const HomeContent = ({
   InitboardCount,
   pageForFetch,
 }) => {
-  console.log("UHOOOOOO", isInit, page);
   const isInit = pageForFetch === page;
   const { data: boards, isLoading } = useSWR(
     `/api/boards?offset=${(page - 1) * take}&limit=${take}`,

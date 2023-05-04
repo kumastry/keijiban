@@ -8,10 +8,19 @@ import Avatar from "@mui/material/Avatar";
 
 import Link from "next/link";
 
-export default function Header({ session, status }) {
+import {
+  useRecoilValue,
+} from 'recoil';
+import {sessionState} from './states/sessionState';
+import { statusState } from "./states/statusState";
+
+export default function Header() {
   //sessionの情報は親要素から
 
   //console.log(session);
+  const status = useRecoilValue(statusState);
+  const session = useRecoilValue(sessionState);
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
