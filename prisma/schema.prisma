@@ -21,6 +21,8 @@ model Board  {
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
   favorites Favorite[]
+
+  @@index([title, category, description, userId])
 }
 
 model Comment  {
@@ -30,9 +32,11 @@ model Comment  {
   updatedAt DateTime @updatedAt
   favorites Favorite []
   board     Board    @relation(fields: [boardId],  references: [id])
-  boardId   Int 
+  boardId   Int
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
+
+  @@index([comment, boardId, userId])
 }
 
 model Account {
@@ -76,6 +80,8 @@ model User {
   sessions Session[]
   favorites Favorite[]
   @@map("user")
+
+  @@index([name,image])
 }
 
 model VerificationToken {
@@ -97,6 +103,7 @@ model Favorite {
   comment Comment @relation(fields: [commentId], references:[id], onDelete: Cascade)
 
   @@map("favorite")
+  @@index([userId,boardId,commentId])
 }
 
 
