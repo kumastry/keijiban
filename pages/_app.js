@@ -6,9 +6,7 @@ import NProgress from "nprogress";
 import Router from "next/router";
 import "../styles/nprogress.css";
 
-import {
-  RecoilRoot,
-} from 'recoil';
+import { RecoilRoot } from "recoil";
 
 export default function App({
   Component,
@@ -21,21 +19,21 @@ export default function App({
 
   return (
     <RecoilRoot>
-    <SessionProvider session={session}>
-      {Component.auth ? (
-        /*保護ページ*/
-        <RequiredAuth>
+      <SessionProvider session={session}>
+        {Component.auth ? (
+          /*保護ページ*/
+          <RequiredAuth>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </RequiredAuth>
+        ) : (
+          /*not保護ページ*/
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </RequiredAuth>
-      ) : (
-        /*not保護ページ*/
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      )}
-    </SessionProvider>
+        )}
+      </SessionProvider>
     </RecoilRoot>
   );
 }

@@ -4,8 +4,7 @@ import Head from "next/head";
 const keijibanHead = () => {
   return (
     <>
-
-          {/*SEOは外部に設置する*/}
+      {/*SEOは外部に設置する*/}
       {/*
       <Head>
         <title>kumastry keijiban</title>

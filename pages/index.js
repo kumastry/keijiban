@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { useState } from "react";
 import { fetcher } from "../utils/fetcher";
 
-
 //MUIS
 import Fab from "@mui/material/Fab";
 import Stack from "@mui/material/Stack";
@@ -36,8 +35,6 @@ export default function Home({ boards, boardCount, pageForFetch }) {
   const page = +router.query.page || 1;
   const [newPage, setNewPage] = useState(page);
 
-
-
   console.log(pageForFetch, page);
   const isInit = pageForFetch === page;
   const take = 5;
@@ -45,11 +42,10 @@ export default function Home({ boards, boardCount, pageForFetch }) {
     <SWRConfig
       value={{
         refreshInterval: 1000,
-        fetcher
+        fetcher,
       }}
     >
       <HomeContent
-
         page={newPage}
         take={take}
         setNewPage={setNewPage}
@@ -58,25 +54,24 @@ export default function Home({ boards, boardCount, pageForFetch }) {
         pageForFetch={pageForFetch}
       />
 
-<div style={{ display: "none" }}>
+      <div style={{ display: "none" }}>
         <HomeContent
-
           page={newPage + 1}
           take={take}
           setNewPage={setNewPage}
           pageForFetch={pageForFetch}
         />
       </div>
+      {newPage > 0 ||
       <div style={{ display: "none" }}>
         <HomeContent
-
           page={newPage - 1}
           take={take}
           setNewPage={setNewPage}
           pageForFetch={pageForFetch}
         />
       </div>
-
+}
     </SWRConfig>
   );
 }
@@ -90,7 +85,6 @@ const HomeContent = ({
   InitboardCount,
   pageForFetch,
 }) => {
-
   const status = useRecoilValue(statusState);
   const isInit = pageForFetch === page;
   const { data: boards, isLoading } = useSWR(
@@ -122,15 +116,12 @@ const HomeContent = ({
   */
   //なんのhandleChange?
 
-  window.addEventListener('popstate', (event) => {
-
-  });
-
+  window.addEventListener("popstate", (event) => {});
 
   const handlePaginationChange = (event, page) => {
     const url = new URL(window.location);
-    url.searchParams.set('page', page);
-    window.history.pushState({}, '', url);
+    url.searchParams.set("page", page);
+    window.history.pushState({}, "", url);
     setNewPage(page);
   };
 
@@ -138,7 +129,6 @@ const HomeContent = ({
 
   return (
     <>
-
       <KeijibanHead />
       {/* ページネーション共通化できそう */}
       <PaginationForKeijiban

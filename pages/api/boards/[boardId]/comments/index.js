@@ -38,7 +38,6 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-
     const boardId = +req.params.boardId;
 
     console.log("MEMEMETO");

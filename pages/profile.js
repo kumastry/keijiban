@@ -91,11 +91,7 @@ profile.auth = true;
 
 export async function getServerSideProps(context) {
   //userIdのユーザーの掲示板投稿数，コメント投稿数，いいね数を表示する
-  const session = await getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   const userId = session?.user.id || "";
 

@@ -40,7 +40,6 @@ import { sessionState } from "../components/states/sessionState";
 //セッションがないとリダイレクトする必要がある
 
 export default function post_keijiban() {
-
   const session = useRecoilValue(sessionState);
   const { control, handleSubmit, validationRules } = useFormValidation({
     title: "",

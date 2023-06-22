@@ -8,10 +8,8 @@ import Avatar from "@mui/material/Avatar";
 
 import Link from "next/link";
 
-import {
-  useRecoilValue,
-} from 'recoil';
-import {sessionState} from './states/sessionState';
+import { useRecoilValue } from "recoil";
+import { sessionState } from "./states/sessionState";
 import { statusState } from "./states/statusState";
 
 export default function Header() {
@@ -20,7 +18,6 @@ export default function Header() {
   //console.log(session);
   const status = useRecoilValue(statusState);
   const session = useRecoilValue(sessionState);
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>

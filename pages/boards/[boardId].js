@@ -55,7 +55,7 @@ export default function board({
   take,
   page,
   commentUsers,
-  board
+  board,
 }) {
   return (
     <SWRConfig
@@ -88,7 +88,6 @@ const BoardContent = ({
   commentUsers,
   board,
 }) => {
-
   const session = useRecoilValue(sessionState);
   const status = useRecoilValue(statusState);
 

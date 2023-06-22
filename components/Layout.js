@@ -4,8 +4,8 @@ import styles from "../styles/Home.module.css";
 import { useSession } from "next-auth/react";
 import { cloneElement } from "react";
 
-import {useSetRecoilState } from "recoil";
-import {sessionState} from './states/sessionState';
+import { useSetRecoilState } from "recoil";
+import { sessionState } from "./states/sessionState";
 import { statusState } from "./states/statusState";
 
 export default function Layout({ children }) {

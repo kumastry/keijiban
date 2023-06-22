@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
 export const statusState = atom({
-    key: 'statusState',
-    default: ''
+  key: "statusState",
+  default: "",
 });
