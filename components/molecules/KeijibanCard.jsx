@@ -1,9 +1,10 @@
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-//import Typography from "@mui/material/Typography";
-import Typography from "./atoms/Typography";
+
+import Button from "./atoms/Button";
+import Typography from "@mui/material/Typography";
+
 import Link from "next/link";
 
 const newLineStyle = {
@@ -37,7 +38,7 @@ const KeijibanCard = ({ id, title, category, description, number }) => {
         }}
       >
         <Link href={`/boards/${id}`}>
-          <Button size="large">掲示板を見る</Button>
+          <Button size="large" text={"掲示板を見る"} />
         </Link>
       </CardActions>
     </Card>

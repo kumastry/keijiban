@@ -62,16 +62,16 @@ export default function Home({ boards, boardCount, pageForFetch }) {
           pageForFetch={pageForFetch}
         />
       </div>
-      {newPage > 0 ||
-      <div style={{ display: "none" }}>
-        <HomeContent
-          page={newPage - 1}
-          take={take}
-          setNewPage={setNewPage}
-          pageForFetch={pageForFetch}
-        />
-      </div>
-}
+      {newPage > 0 || (
+        <div style={{ display: "none" }}>
+          <HomeContent
+            page={newPage - 1}
+            take={take}
+            setNewPage={setNewPage}
+            pageForFetch={pageForFetch}
+          />
+        </div>
+      )}
     </SWRConfig>
   );
 }

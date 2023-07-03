@@ -1,12 +1,5 @@
-import {Link as NextLink} from "next/link";
+import { Link as NextLink } from "next/link";
 
-export default function NextLink(
-    href = "",
-    Child
-) {
-    return (
-        <NextLink href={href}>
-            <Child/>
-        </NextLink>
-    );
+export default function Link({ href, text }) {
+  return <NextLink href={href}>{text}</NextLink>;
 }
